@@ -1,0 +1,50 @@
+{
+  "name": "formsg-workflow-engine",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/formsg-workflow-engine/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "webpack-cli build",
+        "args": [
+          "node-env=production"
+        ]
+      },
+      "configurations": {
+        "development": {
+          "args": [
+            "node-env=development"
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": [
+        "build"
+      ],
+      "options": {
+        "buildTarget": "formsg-workflow-engine:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "formsg-workflow-engine:build:development"
+        },
+        "production": {
+          "buildTarget": "formsg-workflow-engine:build:production"
+        }
+      }
+    },
+    "docker-build": {
+      "dependsOn": [
+        "build"
+      ],
+      "command": "docker build -f apps/formsg-workflow-engine/Dockerfile . -t formsg-workflow-engine"
+    }
+  }
+}
