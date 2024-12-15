@@ -15,10 +15,13 @@ export class SubmissionsController {
   create(@Req() request: Request): string {
     // console.log('Webhook Body', request.body.data);
 
-    const postUri = `${process.env.APP_DOMAIN}/api/submissions`;
+    const protocol =
+      request.headers['x-forwarded-proto'] !== undefined
+        ? request.headers['x-forwarded-proto']
+        : request.protocol;
     const response = this.submissionService.decryptFormData(
       request.get('X-FormSG-Signature'),
-      postUri,
+      `${protocol}://${request.hostname}${request.path}`,
       request.body.data
     );
     return response.message;
