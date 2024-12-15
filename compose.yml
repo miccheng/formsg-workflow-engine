@@ -1,4 +1,9 @@
 services:
+  temporal:
+    image: ghcr.io/miccheng/temporal-dev:latest
+    ports:
+      - 7233:7233
+      - 8233:8233
   ngrok:
     image: ngrok/ngrok:latest
     command:
