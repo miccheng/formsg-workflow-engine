@@ -1,6 +1,6 @@
 ### Mock Submission
 
-POST https://c79c-118-189-65-37.ngrok-free.app/api/submissions HTTP/1.1
+POST https://regular-lucky-coral.ngrok-free.app/api/submissions HTTP/1.1
 content-type: application/json
 
 {
@@ -11,4 +11,4 @@ content-type: application/json
 }
 
 ### Health Check for API endpoint
-GET https://c79c-118-189-65-37.ngrok-free.app/api
+GET https://regular-lucky-coral.ngrok-free.app/api/submissions

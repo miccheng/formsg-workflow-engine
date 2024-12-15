@@ -1,0 +1,11 @@
+services:
+  ngrok:
+    image: ngrok/ngrok:latest
+    command:
+      - 'http'
+      - '--url=${NGROK_DOMAIN}'
+      - 'http://host.docker.internal:3000'
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    ports:
+      - 4040:4040
