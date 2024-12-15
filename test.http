@@ -1,0 +1,14 @@
+### Mock Submission
+
+POST https://c79c-118-189-65-37.ngrok-free.app/api/submissions HTTP/1.1
+content-type: application/json
+
+{
+    "data": {
+        "name": "sample",
+        "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+    }
+}
+
+### Health Check for API endpoint
+GET https://c79c-118-189-65-37.ngrok-free.app/api
