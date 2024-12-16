@@ -1,14 +1,19 @@
 import { Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { SubmissionService } from './submission.service';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 @Controller('submissions')
 export class SubmissionsController {
   constructor(private readonly submissionService: SubmissionService) {}
 
   @Get()
-  show(): string {
-    return 'Hello World!';
+  async show(): Promise<string> {
+    const submissionsCount = await prisma.submissions.count();
+
+    return `Hello World! We found ${submissionsCount} submissions in the database.`;
   }
 
   @Post()
