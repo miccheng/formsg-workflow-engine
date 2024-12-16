@@ -9,24 +9,18 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
-        "args": [
-          "node-env=production"
-        ]
+        "args": ["node-env=production"]
       },
       "configurations": {
         "development": {
-          "args": [
-            "node-env=development"
-          ]
+          "args": ["node-env=development"]
         }
       }
     },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "options": {
         "buildTarget": "formsg-workflow-engine:build",
         "runBuildTargetDependencies": false
@@ -41,10 +35,44 @@
       }
     },
     "docker-build": {
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "command": "docker build -f apps/formsg-workflow-engine/Dockerfile . -t formsg-workflow-engine"
+    },
+    "prisma-deploy": {
+      "executor": "@nx-tools/nx-prisma:deploy"
+    },
+    "prisma-format": {
+      "executor": "@nx-tools/nx-prisma:format"
+    },
+    "prisma-generate": {
+      "executor": "@nx-tools/nx-prisma:generate"
+    },
+    "prisma-migrate": {
+      "executor": "@nx-tools/nx-prisma:migrate"
+    },
+    "prisma-pull": {
+      "executor": "@nx-tools/nx-prisma:pull"
+    },
+    "prisma-push": {
+      "executor": "@nx-tools/nx-prisma:push"
+    },
+    "prisma-reset": {
+      "executor": "@nx-tools/nx-prisma:reset"
+    },
+    "prisma-resolve": {
+      "executor": "@nx-tools/nx-prisma:resolve"
+    },
+    "prisma-seed": {
+      "executor": "@nx-tools/nx-prisma:seed"
+    },
+    "prisma-status": {
+      "executor": "@nx-tools/nx-prisma:status"
+    },
+    "prisma-studio": {
+      "executor": "@nx-tools/nx-prisma:studio"
+    },
+    "prisma-validate": {
+      "executor": "@nx-tools/nx-prisma:validate"
     }
   }
 }
