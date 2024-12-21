@@ -12,3 +12,6 @@ content-type: application/json
 
 ### Health Check for API endpoint
 GET https://regular-lucky-coral.ngrok-free.app/api/submissions
+
+### Health Check for API endpoint (localhost)
+GET http://localhost:3000/api/submissions

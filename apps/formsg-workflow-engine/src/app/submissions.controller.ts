@@ -1,29 +1,54 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { SubmissionService } from './submission.service';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 @Controller('submissions')
 export class SubmissionsController {
   constructor(private readonly submissionService: SubmissionService) {}
 
   @Get()
-  show(): string {
-    return 'Hello World!';
+  async show(): Promise<string> {
+    const submissionsCount = await prisma.submissions.count();
+
+    return `Hello World! We found ${submissionsCount} submissions in the database.`;
   }
 
   @Post()
-  create(@Req() request: Request): string {
+  async create(@Req() request: Request): Promise<string> {
     // console.log('Webhook Body', request.body.data);
 
-    const protocol =
-      request.headers['x-forwarded-proto'] !== undefined
-        ? request.headers['x-forwarded-proto']
-        : request.protocol;
-    const response = this.submissionService.decryptFormData(
-      request.get('X-FormSG-Signature'),
-      `${protocol}://${request.hostname}${request.path}`,
-      request.body.data
-    );
-    return response.message;
+    try {
+      const protocol =
+        request.headers['x-forwarded-proto'] !== undefined
+          ? request.headers['x-forwarded-proto']
+          : request.protocol;
+      const response = this.submissionService.decryptFormData(
+        request.get('X-FormSG-Signature'),
+        `${protocol}://${request.hostname}${request.path}`,
+        request.body.data
+      );
+
+      await prisma.submissions.create({
+        data: {
+          formId: request.body.data.formId,
+          submissionId: request.body.data.submissionId,
+          formData: response.formData,
+        },
+      });
+
+      return response.message;
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

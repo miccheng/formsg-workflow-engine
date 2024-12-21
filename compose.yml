@@ -1,4 +1,15 @@
 services:
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: formsgworkflow
+      POSTGRES_PASSWORD: password1234
+      POSTGRES_DB: formsgworkflow
+      TZ: GMT+8
+      PGTZ: GMT+8
+    ports:
+      - 5432:5432
   temporal:
     image: ghcr.io/miccheng/temporal-dev:latest
     ports:
