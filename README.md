@@ -46,15 +46,15 @@
 
 2. Start the NestJS app
 
-```bash
-npx nx serve formsg-workflow-engine
-```
+   ```bash
+   npx nx serve formsg-workflow-engine
+   ```
 
 3. Start the Temporal Worker
 
-```bash
-npx nx serve temporal-worker
-```
+   ```bash
+   npx nx serve temporal-worker
+   ```
 
 ## Test
 
