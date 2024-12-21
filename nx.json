@@ -35,8 +35,7 @@
         "targetName": "test"
       },
       "exclude": [
-        "apps/formsg-workflow-engine-e2e/**/*",
-        "apps/temporal-worker-e2e/**/*"
+        "apps/formsg-workflow-engine-e2e/**/*"
       ]
     }
   ],
