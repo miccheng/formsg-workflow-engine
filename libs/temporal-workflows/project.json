@@ -1,0 +1,33 @@
+{
+  "name": "temporal-workflows",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/temporal-workflows/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/temporal-workflows",
+        "tsConfig": "libs/temporal-workflows/tsconfig.lib.json",
+        "packageJson": "libs/temporal-workflows/package.json",
+        "main": "libs/temporal-workflows/src/index.ts",
+        "assets": ["libs/temporal-workflows/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@formsg-workflow-engine/temporal-workflows": [
+        "libs/temporal-workflows/src/index.ts"
+      ],
       "@formsg-workflow-engine/workflows": ["apps/workflows/src/index.ts"]
     }
   },

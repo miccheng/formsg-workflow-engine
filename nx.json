@@ -34,7 +34,10 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/formsg-workflow-engine-e2e/**/*"]
+      "exclude": [
+        "apps/formsg-workflow-engine-e2e/**/*",
+        "apps/temporal-worker-e2e/**/*"
+      ]
     }
   ],
   "targetDefaults": {
@@ -42,6 +45,16 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    }
+  },
+  "release": {
+    "version": {
+      "preVersionCommand": "npx nx run-many -t build"
     }
   }
 }

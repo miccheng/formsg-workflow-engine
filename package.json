@@ -26,6 +26,7 @@
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
     "@nx-tools/nx-prisma": "^6.4.1",
+    "@nx/esbuild": "20.2.2",
     "@nx/eslint": "20.2.2",
     "@nx/eslint-plugin": "20.2.2",
     "@nx/jest": "20.2.2",
@@ -40,6 +41,7 @@
     "@swc/helpers": "~0.5.11",
     "@types/jest": "^29.5.12",
     "@types/node": "~18.16.9",
+    "esbuild": "^0.19.2",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.0.0",
     "husky": "^9.1.7",
@@ -53,6 +55,10 @@
     "tslib": "^2.3.0",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.13.0",
+    "verdaccio": "^5.0.4",
     "webpack-cli": "^5.1.4"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

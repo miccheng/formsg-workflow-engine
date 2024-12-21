@@ -8,13 +8,17 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { SubmissionService } from './submission.service';
+import { TemporalService } from './temporal.service';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 @Controller('submissions')
 export class SubmissionsController {
-  constructor(private readonly submissionService: SubmissionService) {}
+  constructor(
+    private readonly submissionService: SubmissionService,
+    private readonly temporalService: TemporalService
+  ) {}
 
   @Get()
   async show(): Promise<string> {
@@ -45,6 +49,14 @@ export class SubmissionsController {
           formData: response.formData,
         },
       });
+
+      const emailAddress = response.formData.responses.filter(
+        (field) => field.question === 'Email' && field.fieldType === 'email'
+      )[0].answer;
+      await this.temporalService.startValidateEmailWorkflow(
+        request.body.data.submissionId,
+        emailAddress
+      );
 
       return response.message;
     } catch (e) {
