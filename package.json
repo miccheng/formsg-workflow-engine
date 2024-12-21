@@ -12,6 +12,11 @@
     "@nestjs/platform-express": "^10.0.2",
     "@opengovsg/formsg-sdk": "^0.12.0",
     "@prisma/client": "5.19.0",
+    "@temporalio/activity": "^1.11.5",
+    "@temporalio/client": "^1.11.5",
+    "@temporalio/common": "^1.11.5",
+    "@temporalio/worker": "^1.11.5",
+    "@temporalio/workflow": "^1.11.5",
     "axios": "^1.6.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0"
