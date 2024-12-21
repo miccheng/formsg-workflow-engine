@@ -18,12 +18,6 @@
    DATABASE_URL=postgresql://formsgworkflow:password1234@localhost:5432/formsgworkflow
    ```
 
-## Run
-
-```bash
-npx nx serve formsg-workflow-engine
-```
-
 ### Ngrok
 
 1. Get your Ngrok Authentication Token from [here](https://dashboard.ngrok.com/get-started/your-authtoken).
@@ -41,6 +35,26 @@ npx nx serve formsg-workflow-engine
    ```bash
    ./ngrok.sh
    ```
+
+## Run
+
+1. Start the backing services:
+
+   ```bash
+   docker compose up -d
+   ```
+
+2. Start the NestJS app
+
+```bash
+npx nx serve formsg-workflow-engine
+```
+
+3. Start the Temporal Worker
+
+```bash
+npx nx serve temporal-worker
+```
 
 ## Test
 

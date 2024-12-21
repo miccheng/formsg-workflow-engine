@@ -32,6 +32,7 @@ export class SubmissionsController {
     // console.log('Webhook Body', request.body.data);
 
     try {
+      const formSecretKey = process.env.FORM_SECRET_KEY;
       const protocol =
         request.headers['x-forwarded-proto'] !== undefined
           ? request.headers['x-forwarded-proto']
@@ -39,6 +40,7 @@ export class SubmissionsController {
       const response = this.submissionService.decryptFormData(
         request.get('X-FormSG-Signature'),
         `${protocol}://${request.hostname}${request.path}`,
+        formSecretKey,
         request.body.data
       );
 
@@ -50,12 +52,9 @@ export class SubmissionsController {
         },
       });
 
-      const emailAddress = response.formData.responses.filter(
-        (field) => field.question === 'Email' && field.fieldType === 'email'
-      )[0].answer;
-      await this.temporalService.startValidateEmailWorkflow(
-        request.body.data.submissionId,
-        emailAddress
+      await this.temporalService.startFormWorkflow(
+        request.body.data.formId,
+        request.body.data.submissionId
       );
 
       return response.message;

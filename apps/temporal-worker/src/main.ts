@@ -1,14 +1,14 @@
 import { Worker } from '@temporalio/worker';
-import * as activities from '../../../libs/temporal-workflows/src/lib/all-activities';
+import { AllActivities } from '@formsg-workflow-engine/temporal-workflows';
 
 async function run() {
   // Step 1: Register Workflows and Activities with the Worker and connect to
   // the Temporal server.
   const worker = await Worker.create({
     workflowsPath: require.resolve(
-      '/Users/miccheng/Personal/formsg-workflow-engine/dist/libs/temporal-workflows/src/lib/all-workflows.js'
+      '../../../libs/temporal-workflows/src/lib/all-workflows.js'
     ),
-    activities,
+    activities: AllActivities,
     taskQueue: 'formsg-workflow-engine',
   });
   // Worker connects to localhost by default and uses console.error for logging.

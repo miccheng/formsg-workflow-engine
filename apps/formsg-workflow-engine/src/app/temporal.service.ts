@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Connection, Client } from '@temporalio/client';
-import { AllWorkflows } from '@formsg-workflow-engine/temporal-workflows';
+import { WorkflowTable } from '@formsg-workflow-engine/temporal-workflows';
 
 @Injectable()
 export class TemporalService {
@@ -12,18 +12,15 @@ export class TemporalService {
     return this.client;
   }
 
-  async startValidateEmailWorkflow(
-    submissionId: string,
-    email: string
-  ): Promise<void> {
+  async startFormWorkflow(formId: string, submissionId: string): Promise<void> {
     if (!this.client) {
       await this._connectToTemporal();
     }
 
-    await this.client.workflow.start(AllWorkflows.checkEmailWorkflow, {
+    await this.client.workflow.start(WorkflowTable[formId], {
       taskQueue: 'formsg-workflow-engine',
-      workflowId: `submission-${submissionId}-validate-email`,
-      args: [email],
+      workflowId: `process-${formId}-${submissionId}`,
+      args: [submissionId],
     });
   }
 }
