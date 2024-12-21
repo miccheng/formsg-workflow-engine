@@ -14,7 +14,6 @@
     ],
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
-  "nxCloudId": "675d280d0c1d113dbe83e8f8",
   "plugins": [
     {
       "plugin": "@nx/webpack/plugin",
@@ -35,7 +34,26 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/formsg-workflow-engine-e2e/**/*"]
+      "exclude": [
+        "apps/formsg-workflow-engine-e2e/**/*"
+      ]
     }
-  ]
+  ],
+  "targetDefaults": {
+    "@nx/js:tsc": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    }
+  },
+  "release": {
+    "version": {
+      "preVersionCommand": "npx nx run-many -t build"
+    }
+  }
 }

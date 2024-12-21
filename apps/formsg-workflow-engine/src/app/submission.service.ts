@@ -11,9 +11,9 @@ export class SubmissionService {
   decryptFormData(
     signature: string,
     postURI: string,
+    formSecretKey: string,
     formData: DecryptParams | DecryptParamsV3
   ): { message: string; formData?: DecryptedContent } {
-    const formSecretKey = process.env.FORM_SECRET_KEY;
     const FormSG = formsg();
 
     FormSG.webhooks.authenticate(signature, postURI);

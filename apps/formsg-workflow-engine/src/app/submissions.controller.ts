@@ -8,13 +8,17 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { SubmissionService } from './submission.service';
+import { TemporalService } from './temporal.service';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 @Controller('submissions')
 export class SubmissionsController {
-  constructor(private readonly submissionService: SubmissionService) {}
+  constructor(
+    private readonly submissionService: SubmissionService,
+    private readonly temporalService: TemporalService
+  ) {}
 
   @Get()
   async show(): Promise<string> {
@@ -28,6 +32,7 @@ export class SubmissionsController {
     // console.log('Webhook Body', request.body.data);
 
     try {
+      const formSecretKey = process.env.FORM_SECRET_KEY;
       const protocol =
         request.headers['x-forwarded-proto'] !== undefined
           ? request.headers['x-forwarded-proto']
@@ -35,6 +40,7 @@ export class SubmissionsController {
       const response = this.submissionService.decryptFormData(
         request.get('X-FormSG-Signature'),
         `${protocol}://${request.hostname}${request.path}`,
+        formSecretKey,
         request.body.data
       );
 
@@ -45,6 +51,11 @@ export class SubmissionsController {
           formData: response.formData,
         },
       });
+
+      await this.temporalService.startFormWorkflow(
+        request.body.data.formId,
+        request.body.data.submissionId
+      );
 
       return response.message;
     } catch (e) {
