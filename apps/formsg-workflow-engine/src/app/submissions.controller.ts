@@ -5,6 +5,7 @@ import {
   Req,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { SubmissionService } from './submission.service';
@@ -29,7 +30,7 @@ export class SubmissionsController {
 
   @Post()
   async create(@Req() request: Request): Promise<string> {
-    // console.log('Webhook Body', request.body.data);
+    Logger.debug('Webhook Body', request.body.data);
 
     try {
       const formSecretKey = process.env.FORM_SECRET_KEY;

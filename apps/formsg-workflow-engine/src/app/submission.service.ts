@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import formsg from '@opengovsg/formsg-sdk';
 import {
   DecryptedContent,
@@ -21,7 +21,7 @@ export class SubmissionService {
       formSecretKey,
       formData
     );
-    // console.log('decrypted data', submission);
+    Logger.debug('Decrypted data', submission);
     return {
       message: 'Successfully decrypted form data',
       formData: submission,
