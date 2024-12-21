@@ -1,5 +1,7 @@
 # FormSG Workflow Engine
 
+![System Architecture](./system_architecture.png)
+
 ## Setup
 
 1. Install the dependencies
