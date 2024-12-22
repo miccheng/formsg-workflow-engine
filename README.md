@@ -41,6 +41,18 @@
    npx nx prisma-generate formsg-workflow-engine
    ```
 
+3. To create a new migration file from changes made to `schema.prisma`:
+
+   ```bash
+   npx nx prisma-migrate formsg-workflow-engine --name <new_migration_name>
+   ```
+
+4. To run the database seed from `seed_data.ts`:
+
+   ```bash
+   npx nx prisma-seed formsg-workflow-engine --script seed_data.ts
+   ```
+
 ## Run
 
 1. Start the NestJS app

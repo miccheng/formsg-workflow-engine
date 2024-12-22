@@ -7,6 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model SGForms {
+  id         Int      @id @default(autoincrement())
+  formId     String   @unique @map("form_id") @db.VarChar(255)
+  formSecret String   @map("form_secret") @db.VarChar(255)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([formId])
+  @@map("sg_forms")
+}
+
 model Submissions {
   id           Int      @id @default(autoincrement())
   formId       String   @map("form_id") @db.VarChar(255)
@@ -15,5 +26,6 @@ model Submissions {
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
+  @@index([formId])
   @@map("submissions")
 }

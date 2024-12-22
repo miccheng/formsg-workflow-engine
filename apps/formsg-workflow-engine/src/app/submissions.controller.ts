@@ -33,7 +33,10 @@ export class SubmissionsController {
     Logger.debug('Webhook Body', request.body.data);
 
     try {
-      const formSecretKey = process.env.FORM_SECRET_KEY;
+      const theForm = await prisma.sGForms.findUniqueOrThrow({
+        select: { formSecret: true },
+        where: { formId: request.body.data.formId },
+      });
       const protocol =
         request.headers['x-forwarded-proto'] !== undefined
           ? request.headers['x-forwarded-proto']
@@ -41,7 +44,7 @@ export class SubmissionsController {
       const response = this.submissionService.decryptFormData(
         request.get('X-FormSG-Signature'),
         `${protocol}://${request.hostname}${request.path}`,
-        formSecretKey,
+        theForm.formSecret,
         request.body.data
       );
 
@@ -58,8 +61,10 @@ export class SubmissionsController {
         request.body.data.submissionId
       );
 
+      Logger.log(response.message);
       return response.message;
     } catch (e) {
+      Logger.error(e.message);
       throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
