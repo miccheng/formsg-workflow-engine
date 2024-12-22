@@ -103,4 +103,57 @@ describe('parseSubmissionModel', () => {
       },
     });
   });
+
+  it('should parse definition with missing fields', async () => {
+    const definition: FormDefinition = {
+      emailField: 'Email',
+      fields: {
+        'Mobile number': 'mobileNumber',
+      },
+    };
+
+    const responses = [
+      {
+        _id: '675d3e28f6cd69f42f2427de',
+        answer: 'Michael Cheng',
+        question: 'Email',
+        fieldType: 'textfield',
+      },
+      {
+        _id: '675d3e1edb2dac8ff73bd088',
+        answer: 'me@example.com',
+        question: 'Email',
+        fieldType: 'email',
+      },
+      {
+        _id: '675d3e72ce3d08e836a40af4',
+        answer: '+6581234567',
+        question: 'Mobile number',
+        fieldType: 'mobile',
+      },
+      {
+        _id: '675d3e5e594e1567c22bbae2',
+        answer: '01 Jan 1990',
+        question: 'Date of Birth',
+        fieldType: 'date',
+      },
+    ];
+
+    const result = parseSubmissionModel(definition, responses);
+
+    expect(result.email).toEqual('me@example.com');
+    expect(result.submitter).toBeUndefined();
+    expect(result.fields).toEqual({
+      mobileNumber: {
+        question: 'Mobile number',
+        fieldType: 'mobile',
+        answer: '+6581234567',
+      },
+      'Date of Birth': {
+        question: 'Date of Birth',
+        fieldType: 'date',
+        answer: '01 Jan 1990',
+      },
+    });
+  });
 });

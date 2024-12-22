@@ -29,16 +29,17 @@ export const parseSubmissionModel = (
     ) {
       newResponse.submitter = field.answer;
     } else {
-      if (
-        Object.prototype.hasOwnProperty.call(definition.fields, field.question)
-      ) {
-        const fieldName = definition.fields[field.question];
-        newResponse.fields[fieldName] = {
-          question: field.question,
-          fieldType: field.fieldType,
-          answer: field.answer,
-        };
-      }
+      const fieldName = Object.prototype.hasOwnProperty.call(
+        definition.fields,
+        field.question
+      )
+        ? definition.fields[field.question]
+        : field.question;
+      newResponse.fields[fieldName] = {
+        question: field.question,
+        fieldType: field.fieldType,
+        answer: field.answer,
+      };
     }
   });
 
