@@ -14,7 +14,7 @@ export type FormResponseDTO = {
 
 export const parseSubmissionModel = (
   definition: FormDefinition,
-  responses: any[]
+  responses: { question: string; fieldType: string; answer: string }[]
 ): FormResponseDTO => {
   const newResponse: FormResponseDTO = {
     fields: {},
