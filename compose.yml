@@ -25,6 +25,13 @@ services:
       - MAILDEV_SMTP_PORT=1025
       - MAILDEV_UI_PORT=1080
     restart: unless-stopped
+  mockapi:
+    image: mockoon/cli
+    volumes:
+      - ./mockoon:/data
+    ports:
+      - 8001:8001
+    command: --data /data/mock_api.json --port 8001
   ngrok:
     image: ngrok/ngrok:latest
     command:

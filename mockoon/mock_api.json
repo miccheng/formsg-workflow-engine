@@ -1,0 +1,121 @@
+{
+  "uuid": "7e636ec2-62b8-4c5f-90e8-b13e7c26b660",
+  "lastMigration": 33,
+  "name": "Mock api",
+  "endpointPrefix": "api",
+  "latency": 0,
+  "port": 8001,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "d6e4450c-6af9-4d11-8b3d-35b1246c7265",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "verify",
+      "responses": [
+        {
+          "uuid": "0f1da409-2b4a-4aff-bff5-b1e7da39b1cc",
+          "body": "{\n  \"status\": \"OK\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Valid response by default",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "892afa25-5004-4c35-b031-88485bfb4cf3",
+          "body": "{\n  \"status\": \"NOT_OK\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Return 401 if verification code starts with D",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "verificationCode",
+              "value": "^D.*",
+              "invert": false,
+              "operator": "regex_i"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "d6e4450c-6af9-4d11-8b3d-35b1246c7265"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}
