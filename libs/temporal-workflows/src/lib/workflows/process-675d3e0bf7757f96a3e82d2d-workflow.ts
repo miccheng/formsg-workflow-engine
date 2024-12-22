@@ -3,6 +3,7 @@ import { proxyActivities, log } from '@temporalio/workflow';
 import type * as validateEmailActivities from '../activities/validate-email-activity';
 import type * as retrieveSubmissionActivities from '../activities/retrieve-submission-activity';
 import type * as thankyouEmailActivities from '../activities/thankyou-email-activity';
+import type * as validateVerificationCodeActivities from '../activities/validate-verification-code-activity';
 
 import {
   type FormDefinition,
@@ -23,6 +24,12 @@ const { retrieveSubmissionActivity } = proxyActivities<
 
 const { thankyouEmailActivity } = proxyActivities<
   typeof thankyouEmailActivities
+>({
+  startToCloseTimeout: '1 minute',
+});
+
+const { validateVerificationCodeActivity } = proxyActivities<
+  typeof validateVerificationCodeActivities
 >({
   startToCloseTimeout: '1 minute',
 });
@@ -50,17 +57,29 @@ export const process675d3e0bf7757f96a3e82d2dWorkflow = async (
   const formDTO = parseSubmissionModel(definition, submissionData['responses']);
   log.info('Parsed submission data', { formDTO });
 
-  const result = await validateEmailActivity(formDTO.email);
+  const emailValidationResult = await validateEmailActivity(formDTO.email);
 
-  if (result) {
-    const emailResult = await thankyouEmailActivity(
-      formDTO.email,
-      `Hi ${formDTO.submitter}, Thank you for your submission`
+  if (emailValidationResult) {
+    const verificationCodeResult = await validateVerificationCodeActivity(
+      formDTO.fields?.verificationCode?.answer
     );
-    log.info('Email sent', { emailResult });
 
-    return 'Email is sent';
+    if (verificationCodeResult) {
+      log.info('Verification code is valid', { verificationCodeResult });
+
+      const emailResult = await thankyouEmailActivity(
+        formDTO.email,
+        `Hi ${formDTO.submitter}, Thank you for your submission`
+      );
+      log.info('Email sent', { emailResult });
+
+      return 'Email is sent';
+    } else {
+      log.error('Verification code is not valid', { verificationCodeResult });
+      return 'Verification code is not valid';
+    }
   } else {
+    log.error('Email is not valid', { emailValidationResult });
     return 'Email is not valid';
   }
 };
