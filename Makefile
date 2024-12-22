@@ -1,6 +1,6 @@
 # Define default target
 .DEFAULT_GOAL := help
-.PHONEY: help build run worker dbmigrate dbseed up stop down ps setup
+.PHONEY: help build run worker dbmigrate dbseed up stop down ps setup reset teardown
 
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -34,3 +34,9 @@ ps: ## Status of Containers
 	docker compose ps
 
 setup: up dbmigrate dbseed ## Initial setup
+
+reset: ## Resets NX workspace
+	npx nx reset
+
+teardown: down ## Teardown everything
+	npx nx reset
