@@ -74,8 +74,9 @@
 - **MailDev Web UI**: http://localhost:1080
 - **Ngrok Web UI**: http://localhost:4040
 
-## Test
+## Unit Tests
 
 ```bash
 npx nx test formsg-workflow-engine
+npx nx test temporal-workflows
 ```
