@@ -71,6 +71,8 @@
 
 - **NestJS Application:** http://localhost:3000/api/submissions
 - **Temporal Web UI:** http://localhost:8233
+- **MailDev Web UI**: http://localhost:1080
+- **Ngrok Web UI**: http://localhost:4040
 
 ## Test
 
