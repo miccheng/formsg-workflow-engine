@@ -3,7 +3,9 @@ import { validateVerificationCodeActivity } from './validate-verification-code-a
 describe('validateVerificationCodeActivity', () => {
   it('should validate code format - 4 letters followed by 4 digits', async () => {
     expect(await validateVerificationCodeActivity('ABCD1234')).toBe('OK');
+    expect(await validateVerificationCodeActivity('abcd1234')).toBe('OK');
     expect(await validateVerificationCodeActivity('BEFG4321')).toBe('OK');
+    expect(await validateVerificationCodeActivity('befg4321')).toBe('OK');
   });
 
   it('should validate code format', async () => {

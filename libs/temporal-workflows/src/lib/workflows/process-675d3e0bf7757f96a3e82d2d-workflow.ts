@@ -64,7 +64,7 @@ export const process675d3e0bf7757f96a3e82d2dWorkflow = async (
       formDTO.fields?.verificationCode?.answer
     );
 
-    if (verificationCodeResult) {
+    if (verificationCodeResult === 'OK') {
       log.info('Verification code is valid', { verificationCodeResult });
 
       const emailResult = await thankyouEmailActivity(
