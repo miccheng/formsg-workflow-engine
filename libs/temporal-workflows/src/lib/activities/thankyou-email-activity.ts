@@ -5,11 +5,10 @@ export const thankyouEmailActivity = async (
   email: string,
   message: string
 ): Promise<boolean> => {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
   const transport = nodemailer.createTransport({
-    port: 1025,
-  });
+    host: `${process.env.SMTP_HOST}`,
+    port: process.env.SMTP_PORT,
+  } as nodemailer.TransportOptions);
 
   const info = await transport.sendMail({
     from: '"FormSG Workflow Engine" <me@example.email>',
