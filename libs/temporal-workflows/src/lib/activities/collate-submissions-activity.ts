@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { DateTime } from 'luxon';
+import { stringify } from 'csv-stringify/sync';
 const prisma = new PrismaClient();
 
 export const collateSubmissionsActivity = async (
@@ -12,5 +13,16 @@ export const collateSubmissionsActivity = async (
     where: { formId, createdAt: { gte: dt.toJSDate() } },
   });
 
-  return submissions;
+  const records = submissions.map((submission) => {
+    return Object.fromEntries(
+      submission.formData['responses'].map((response) => [
+        response.question,
+        response.answer,
+      ])
+    );
+  });
+
+  const csvString = stringify(records, { header: true });
+
+  return csvString;
 };

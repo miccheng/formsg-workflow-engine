@@ -2,7 +2,7 @@ import { proxyActivities, log } from '@temporalio/workflow';
 
 import type * as validateEmailActivities from '../activities/validate-email-activity';
 import type * as retrieveSubmissionActivities from '../activities/retrieve-submission-activity';
-import type * as thankyouEmailActivities from '../activities/thankyou-email-activity';
+import type * as emailActivities from '../activities/email-activity';
 import type * as validateVerificationCodeActivities from '../activities/validate-verification-code-activity';
 
 import {
@@ -22,9 +22,7 @@ const { retrieveSubmissionActivity } = proxyActivities<
   startToCloseTimeout: '1 minute',
 });
 
-const { thankyouEmailActivity } = proxyActivities<
-  typeof thankyouEmailActivities
->({
+const { emailActivity } = proxyActivities<typeof emailActivities>({
   startToCloseTimeout: '1 minute',
 });
 
@@ -67,8 +65,9 @@ export const process675d3e0bf7757f96a3e82d2dWorkflow = async (
     if (verificationCodeResult === 'OK') {
       log.info('Verification code is valid', { verificationCodeResult });
 
-      const emailResult = await thankyouEmailActivity(
+      const emailResult = await emailActivity(
         formDTO.email,
+        'Thank you for your submission',
         `Hi ${formDTO.submitter}, Thank you for your submission`
       );
       log.info('Email sent', { emailResult });

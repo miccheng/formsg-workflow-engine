@@ -39,7 +39,7 @@ content-type: application/json
 POST http://localhost:3000/api/scheduler HTTP/1.1
 content-type: application/json
 
-{"formId": "675d3e0bf7757f96a3e82d2d"}
+{"formId": "675d3e0bf7757f96a3e82d2d", "recipientEmail": "adam@eden.com"}
 
 ### Delete Scheduler
 DELETE http://localhost:3000/api/scheduler?formId=675d3e0bf7757f96a3e82d2d HTTP/1.1

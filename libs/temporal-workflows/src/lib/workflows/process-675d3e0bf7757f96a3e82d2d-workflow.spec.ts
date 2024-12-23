@@ -70,7 +70,7 @@ import type * as activities from '../all-activities';
 const mockActivities: Partial<typeof activities> = {
   ...originalActivities,
   retrieveSubmissionActivity: async () => mockResponse,
-  thankyouEmailActivity: async () => true,
+  emailActivity: async () => true,
 };
 
 describe('process675d3e0bf7757f96a3e82d2dWorkflow', () => {

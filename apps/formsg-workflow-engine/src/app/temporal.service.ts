@@ -29,7 +29,10 @@ export class TemporalService {
     });
   }
 
-  async startCollationScheduler(formId: string): Promise<void> {
+  async startCollationScheduler(
+    formId: string,
+    recipientEmail: string
+  ): Promise<void> {
     if (!this.client) {
       await this._connectToTemporal();
     }
@@ -38,7 +41,7 @@ export class TemporalService {
       action: {
         type: 'startWorkflow',
         workflowType: WorkflowTable[`collate-${formId}`] as Workflow,
-        args: [formId],
+        args: [formId, recipientEmail],
         taskQueue: 'collation-scheduler',
       },
       scheduleId: `collate-${formId}`,

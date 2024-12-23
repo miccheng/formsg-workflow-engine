@@ -1,26 +1,43 @@
-import { Controller, Post, Req, Logger, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Req,
+  Body,
+  Logger,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { TemporalService } from './temporal.service';
-import { Request } from 'express';
+
+type CreateSchedulerDto = {
+  formId: string;
+  recipientEmail: string;
+  interval: string;
+};
 
 @Controller('scheduler')
 export class SchedulerController {
   constructor(private readonly temporalService: TemporalService) {}
 
   @Post()
-  async create(@Req() request: Request): Promise<string> {
-    Logger.log('Start Scheduling');
+  async create(
+    @Body() createSchedulerDto: CreateSchedulerDto
+  ): Promise<string> {
+    Logger.log(
+      `Start Scheduling for form: ${createSchedulerDto.formId} for ${createSchedulerDto.recipientEmail}`
+    );
 
-    const formId = `${request.body.formId}`;
-
-    await this.temporalService.startCollationScheduler(formId);
+    await this.temporalService.startCollationScheduler(
+      createSchedulerDto.formId,
+      createSchedulerDto.recipientEmail
+    );
 
     return `Started Scheduler`;
   }
 
   @Delete()
   async delete(@Query('formId') formId): Promise<string> {
-    Logger.log('Stop Scheduling');
-    Logger.log(`FormID: ${formId}`);
+    Logger.log(`Stop Scheduling FormID: ${formId}`);
 
     await this.temporalService.stopCollationScheduler(formId);
 
