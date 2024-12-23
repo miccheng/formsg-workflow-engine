@@ -1,8 +1,10 @@
 import { postRequest } from '../helpers/http-request-helper';
+import { log } from '@temporalio/activity';
 
 export const validateVerificationCodeActivity = async (
   verificationCode: string
 ): Promise<string> => {
+  log.info('Validating verification code:', { verificationCode });
   if (!/^[A-Z]{4}[0-9]{4}/i.test(verificationCode)) return 'NOT_OK';
 
   const url = `${
