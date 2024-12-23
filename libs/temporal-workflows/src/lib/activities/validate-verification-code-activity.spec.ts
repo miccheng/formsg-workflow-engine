@@ -1,16 +1,27 @@
 import { validateVerificationCodeActivity } from './validate-verification-code-activity';
+import { MockActivityEnvironment } from '@temporalio/testing';
 
 describe('validateVerificationCodeActivity', () => {
-  it('should validate code format - 4 letters followed by 4 digits', async () => {
-    expect(await validateVerificationCodeActivity('ABCD1234')).toBe('OK');
-    expect(await validateVerificationCodeActivity('abcd1234')).toBe('OK');
-    expect(await validateVerificationCodeActivity('BEFG4321')).toBe('OK');
-    expect(await validateVerificationCodeActivity('befg4321')).toBe('OK');
+  let mockTemporalEnv: MockActivityEnvironment;
+
+  beforeEach(() => {
+    mockTemporalEnv = new MockActivityEnvironment({ attempt: 2 });
   });
 
-  it('should validate code format', async () => {
-    expect(await validateVerificationCodeActivity('1234')).toBe('NOT_OK');
-    expect(await validateVerificationCodeActivity('1234ABCD')).toBe('NOT_OK');
-    // expect(await validateVerificationCodeActivity('DEFG4321')).toBe('NOT_OK');
-  });
+  it.each([
+    ['ABCD1234', 'OK'],
+    ['abcd1234', 'OK'],
+    ['BEFG4321', 'OK'],
+    ['befg4321', 'OK'],
+    ['1234', 'NOT_OK'],
+    ['1234ABCD', 'NOT_OK'],
+    // ['DEFG4321', 'NOT_OK'],
+  ])(
+    'should validate code format (4 letters followed by 4 digits) for %s',
+    async (code, expected) => {
+      expect(
+        await mockTemporalEnv.run(validateVerificationCodeActivity, code)
+      ).toBe(expected);
+    }
+  );
 });
