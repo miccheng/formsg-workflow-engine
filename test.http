@@ -33,3 +33,13 @@ POST http://localhost:8002/api/appeals HTTP/1.1
 content-type: application/json
 
 {"name": "details"}
+
+
+### Add Scheduler
+POST http://localhost:3000/api/scheduler HTTP/1.1
+content-type: application/json
+
+{"formId": "675d3e0bf7757f96a3e82d2d"}
+
+### Delete Scheduler
+DELETE http://localhost:3000/api/scheduler?formId=675d3e0bf7757f96a3e82d2d HTTP/1.1

@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Logger, Delete } from '@nestjs/common';
+import { Controller, Post, Req, Logger, Delete, Query } from '@nestjs/common';
 import { TemporalService } from './temporal.service';
 import { Request } from 'express';
 
@@ -18,13 +18,12 @@ export class SchedulerController {
   }
 
   @Delete()
-  async delete(@Req() request: Request): Promise<string> {
+  async delete(@Query('formId') formId): Promise<string> {
     Logger.log('Stop Scheduling');
-
-    const formId = `${request.params.formId}`;
+    Logger.log(`FormID: ${formId}`);
 
     await this.temporalService.stopCollationScheduler(formId);
 
-    return `Started Scheduler`;
+    return `Stopped Scheduler`;
   }
 }

@@ -1,4 +1,5 @@
 import { proxyActivities, log } from '@temporalio/workflow';
+import { DateTime } from 'luxon';
 
 import type * as collateSubmissionsActivities from '../activities/collate-submissions-activity';
 
@@ -15,8 +16,7 @@ export const collate675d3e0bf7757f96a3e82d2dWorkflow = async (
   log.info('Collating submissions for formId', { formId });
 
   if (!targetDate) {
-    const currDate = Date.now();
-    targetDate = currDate.toLocaleString();
+    targetDate = DateTime.now().toFormat('yyyy-MM-dd');
   }
 
   const submissionsData = await collateSubmissionsActivity(formId, targetDate);

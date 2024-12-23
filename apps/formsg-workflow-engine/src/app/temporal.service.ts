@@ -39,7 +39,7 @@ export class TemporalService {
         type: 'startWorkflow',
         workflowType: WorkflowTable[`collate-${formId}`] as Workflow,
         args: [formId],
-        taskQueue: 'schedules',
+        taskQueue: 'formsg-workflow-engine',
       },
       scheduleId: `collate-${formId}`,
       policies: {
@@ -47,11 +47,11 @@ export class TemporalService {
         overlap: ScheduleOverlapPolicy.ALLOW_ALL,
       },
       spec: {
-        intervals: [{ every: '30s' }],
+        intervals: [{ every: '1m' }],
       },
     });
 
-    Logger.debug('Schedule', { schedule });
+    Logger.debug('formsg-workflow-engine', { schedule });
   }
 
   async stopCollationScheduler(formId: string): Promise<void> {
