@@ -1,6 +1,6 @@
 # Define default target
 .DEFAULT_GOAL := help
-.PHONEY: help build run worker dbmigrate dbseed up stop down ps setup reset teardown
+.PHONEY: help build run worker dbmigrate dbseed up stop down ps setup reset teardown test
 
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -40,3 +40,6 @@ reset: ## Resets NX workspace
 
 teardown: down ## Teardown everything
 	npx nx reset
+
+test: ## Run tests
+	npx nx run-many -t test -p formsg-workflow-engine temporal-workflows

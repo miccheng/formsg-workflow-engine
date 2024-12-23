@@ -1,6 +1,17 @@
 import { validateVerificationCodeActivity } from './validate-verification-code-activity';
 import { MockActivityEnvironment } from '@temporalio/testing';
 
+jest.mock('../helpers/http-request-helper', () => {
+  return {
+    postRequest: async (url: string, data: any): Promise<any> => {
+      if (data.verificationCode.startsWith('D')) {
+        return { message: 'NOT_OK' };
+      }
+      return { message: 'OK' };
+    },
+  };
+});
+
 describe('validateVerificationCodeActivity', () => {
   let mockTemporalEnv: MockActivityEnvironment;
 
@@ -15,7 +26,7 @@ describe('validateVerificationCodeActivity', () => {
     ['befg4321', 'OK'],
     ['1234', 'NOT_OK'],
     ['1234ABCD', 'NOT_OK'],
-    // ['DEFG4321', 'NOT_OK'],
+    ['DEFG4321', 'NOT_OK'],
   ])(
     'should validate code format (4 letters followed by 4 digits) for %s',
     async (code, expected) => {
