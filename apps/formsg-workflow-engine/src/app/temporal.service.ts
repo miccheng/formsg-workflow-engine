@@ -39,7 +39,7 @@ export class TemporalService {
         type: 'startWorkflow',
         workflowType: WorkflowTable[`collate-${formId}`] as Workflow,
         args: [formId],
-        taskQueue: 'formsg-workflow-engine',
+        taskQueue: 'collation-scheduler',
       },
       scheduleId: `collate-${formId}`,
       policies: {
@@ -51,7 +51,7 @@ export class TemporalService {
       },
     });
 
-    Logger.debug('formsg-workflow-engine', { schedule });
+    Logger.debug('collation-scheduler', { schedule });
   }
 
   async stopCollationScheduler(formId: string): Promise<void> {
