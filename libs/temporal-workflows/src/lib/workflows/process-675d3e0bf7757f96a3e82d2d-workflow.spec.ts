@@ -7,7 +7,7 @@ let testEnv: TestWorkflowEnvironment;
 jest.mock('../helpers/http-request-helper', () => {
   return {
     postRequest: async (url: string, data: any): Promise<any> => {
-      return { message: 'OK' };
+      return { status: 'OK' };
     },
   };
 });

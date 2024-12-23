@@ -5,9 +5,9 @@ jest.mock('../helpers/http-request-helper', () => {
   return {
     postRequest: async (url: string, data: any): Promise<any> => {
       if (data.verificationCode.startsWith('D')) {
-        return { message: 'NOT_OK' };
+        return { status: 'NOT_OK' };
       }
-      return { message: 'OK' };
+      return { status: 'OK' };
     },
   };
 });

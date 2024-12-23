@@ -13,5 +13,5 @@ export const validateVerificationCodeActivity = async (
     verificationCode,
   });
 
-  return response.message === 'OK' ? 'OK' : 'NOT_OK';
+  return response.status === 'OK' ? 'OK' : 'NOT_OK';
 };
