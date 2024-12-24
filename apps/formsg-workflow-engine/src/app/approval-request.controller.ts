@@ -80,7 +80,7 @@ export class ApprovalRequestController {
   async approveRequest(
     @Param('workflowId') workflowId: string,
     @Param('action') action: string,
-    @Query('reason') reason: string
+    @Query('reason') reason?: string
   ): Promise<string> {
     try {
       await this.temporalService.respondToApprovalWorkflow(workflowId, {

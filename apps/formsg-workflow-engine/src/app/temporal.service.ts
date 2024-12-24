@@ -85,7 +85,7 @@ export class TemporalService {
     await this.client.workflow.start(AllWorkflows.approvalNeededWorkflow, {
       taskQueue: 'formsg-workflow-engine',
       workflowId: `approval-request-${workflowId}`,
-      args: [recipientEmail],
+      args: [workflowId, recipientEmail],
     });
   }
 
