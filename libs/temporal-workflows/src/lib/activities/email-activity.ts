@@ -1,11 +1,16 @@
 import * as nodemailer from 'nodemailer';
 import { log } from '@temporalio/activity';
 
+type EmailActivityInput = {
+  email: string;
+  subject: string;
+  message: string;
+  messageHTML?: string;
+  attachments?: { filename: string; content: string }[];
+};
+
 export const emailActivity = async (
-  email: string,
-  subject: string,
-  message: string,
-  attachments?: { filename: string; content: string }[]
+  emailDeliveryOptions: EmailActivityInput
 ): Promise<boolean> => {
   const transport = nodemailer.createTransport({
     host: `${process.env.SMTP_HOST}`,
@@ -14,14 +19,20 @@ export const emailActivity = async (
 
   const emailOptions: nodemailer.SendMailOptions = {
     from: '"FormSG Workflow Engine" <me@example.email>',
-    to: email,
-    subject: subject,
-    text: message,
+    to: emailDeliveryOptions.email,
+    subject: emailDeliveryOptions.subject,
+    text: emailDeliveryOptions.message,
   };
 
-  if (attachments) {
-    log.info('Adding attachments', { attachments });
-    emailOptions.attachments = attachments;
+  if (emailDeliveryOptions.messageHTML) {
+    emailOptions.html = emailDeliveryOptions.messageHTML;
+  }
+
+  if (emailDeliveryOptions.attachments) {
+    log.info('Adding attachments', {
+      attachments: emailDeliveryOptions.attachments,
+    });
+    emailOptions.attachments = emailDeliveryOptions.attachments;
   }
 
   const info = await transport.sendMail(emailOptions);

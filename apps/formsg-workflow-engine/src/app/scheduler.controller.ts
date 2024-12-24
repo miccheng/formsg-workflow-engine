@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Post,
-  Req,
-  Body,
-  Logger,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Controller, Post, Body, Logger, Delete, Query } from '@nestjs/common';
 import { TemporalService } from './temporal.service';
 
 type CreateSchedulerDto = {

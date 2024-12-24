@@ -27,17 +27,17 @@ export const collate675d3e0bf7757f96a3e82d2dWorkflow = async (
 
   const submissionsData = await collateSubmissionsActivity(formId, targetDate);
 
-  const emailResult = await emailActivity(
-    recipientEmail,
-    `Daily digest of the submissions for form ${formId} on ${targetDate}:`,
-    `Here's the daily digest of the submissions for form ${formId} on ${targetDate}:`,
-    [
+  const emailResult = await emailActivity({
+    email: recipientEmail,
+    subject: `Daily digest of the submissions for form ${formId} on ${targetDate}`,
+    message: `Here's the daily digest of the submissions for form ${formId} on ${targetDate}:`,
+    attachments: [
       {
         filename: `submissions-${formId}-${targetDate}.csv`,
         content: submissionsData,
       },
-    ]
-  );
+    ],
+  });
   log.info('Email sent', { emailResult });
 
   return `Email sent to ${recipientEmail}`;

@@ -1,0 +1,29 @@
+@approvalId = 9daa044b-4360-4375-9029-c6365acb0258
+
+### Create Approval Request
+POST http://localhost:3000/api/approval-request/ HTTP/1.1
+content-type: application/json
+
+{"workflowId":"{{approvalId}}", "recipientEmail": "adam@eden.com"}
+
+### Get Approval Request Status
+GET http://localhost:3000/api/approval-request/{{approvalId}} HTTP/1.1
+
+
+### Add Approval Response
+PUT http://localhost:3000/api/approval-request/{{approvalId}} HTTP/1.1
+content-type: application/json
+
+{"approved": true, "reason": "I like it"}
+
+# {"approved": false, "reason": "I hate it"}
+
+### Respond with Approve via GET
+GET http://localhost:3000/api/approval-request/{{approvalId}}/approve?reason=ok HTTP/1.1
+
+### Respond with Reject via GET
+GET http://localhost:3000/api/approval-request/{{approvalId}}/reject?reason=not_ok HTTP/1.1
+
+### Delete Approval Request
+DELETE http://localhost:3000/api/approval-request/{{approvalId}} HTTP/1.1
+

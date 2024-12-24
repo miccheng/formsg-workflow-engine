@@ -65,11 +65,11 @@ export const process675d3e0bf7757f96a3e82d2dWorkflow = async (
     if (verificationCodeResult === 'OK') {
       log.info('Verification code is valid', { verificationCodeResult });
 
-      const emailResult = await emailActivity(
-        formDTO.email,
-        'Thank you for your submission',
-        `Hi ${formDTO.submitter}, Thank you for your submission`
-      );
+      const emailResult = await emailActivity({
+        email: formDTO.email,
+        subject: 'Thank you for your submission',
+        message: `Hi ${formDTO.submitter}, Thank you for your submission`,
+      });
       log.info('Email sent', { emailResult });
 
       return 'Email is sent';

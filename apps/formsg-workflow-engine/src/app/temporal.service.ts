@@ -5,7 +5,10 @@ import {
   ScheduleOverlapPolicy,
   Workflow,
 } from '@temporalio/client';
-import { WorkflowTable } from '@formsg-workflow-engine/temporal-workflows';
+import {
+  WorkflowTable,
+  AllWorkflows,
+} from '@formsg-workflow-engine/temporal-workflows';
 
 @Injectable()
 export class TemporalService {
@@ -66,5 +69,67 @@ export class TemporalService {
     await handle.delete();
 
     Logger.debug(`Deleted Schedule for ${formId}`);
+  }
+
+  async startApprovalNeededWorkflow(
+    workflowId: string,
+    recipientEmail: string
+  ): Promise<void> {
+    if (!this.client) {
+      await this._connectToTemporal();
+    }
+
+    Logger.debug(
+      `Starting Approval Request workflow for ${workflowId} (${recipientEmail})`
+    );
+    await this.client.workflow.start(AllWorkflows.approvalNeededWorkflow, {
+      taskQueue: 'formsg-workflow-engine',
+      workflowId: `approval-request-${workflowId}`,
+      args: [workflowId, recipientEmail],
+    });
+  }
+
+  async queryWorkflowStatus(workflowId: string): Promise<string> {
+    if (!this.client) {
+      await this._connectToTemporal();
+    }
+    Logger.debug(`Querying Approval Request status: ${workflowId}`);
+
+    const handle = this.client.workflow.getHandle(
+      `approval-request-${workflowId}`
+    );
+    const status = await handle.query(AllWorkflows.statusQuery);
+
+    return `${status}`;
+  }
+
+  // Signal to the ApprovalNeededWorkflow with the response
+  async respondToApprovalWorkflow(
+    workflowId: string,
+    response: { approved: boolean; reason?: string }
+  ): Promise<void> {
+    if (!this.client) {
+      await this._connectToTemporal();
+    }
+    Logger.debug(
+      `Signalling Approval Request for ${workflowId}: ${response.approved}, ${response.reason}`
+    );
+
+    const handle = this.client.workflow.getHandle(
+      `approval-request-${workflowId}`
+    );
+    await handle.signal(AllWorkflows.respondSignal, response);
+  }
+
+  async cancelWorkflow(workflowId: string) {
+    if (!this.client) {
+      await this._connectToTemporal();
+    }
+    Logger.debug(`Cancelling Approval Request: ${workflowId}`);
+
+    const handle = this.client.workflow.getHandle(
+      `approval-request-${workflowId}`
+    );
+    await handle.cancel();
   }
 }
