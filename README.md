@@ -1,6 +1,6 @@
 # FormSG Workflow Engine
 
-![System Architecture](./system_architecture.png)
+![System Architecture](./docs/system_architecture.png)
 
 ## Setup
 
@@ -80,3 +80,9 @@
 npx nx test formsg-workflow-engine
 npx nx test temporal-workflows
 ```
+
+## Other Docs
+
+- [Approval Concepts](./docs/approval_concepts.md)
+- [NX Readme](./docs/README_NX.md)
+
