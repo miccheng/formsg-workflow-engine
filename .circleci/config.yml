@@ -26,7 +26,9 @@ jobs:
       - node/install:
           node-version: '20.18.1'
       - node/install-packages:
-          cache-path: ~/.npm
+          cache-path: .npm
+          cache-only-lockfile: true
+          with-cache: true
       - run: cp env.sample .env
       - run: |
           npx nx prisma-push formsg-workflow-engine && \
