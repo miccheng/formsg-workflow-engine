@@ -12,12 +12,20 @@ jobs:
   unit-tests:
     docker:
       - image: cimg/base:stable
+      - image: cimg/postgres:17.0
+        environment:
+          POSTGRES_USER: formsgworkflow
+          POSTGRES_PASSWORD: password1234
+          POSTGRES_DB: formsgworkflow
+          TZ: GMT+8
+          PGTZ: GMT+8
     steps:
       - checkout
       - node/install:
           node-version: '20.18.1'
       - node/install-packages:
           cache-path: ~/.npm
+      - run: cp .env.example .env
       - run: npx nx run-many -t test -p formsg-workflow-engine temporal-workflows
 
 # Orchestrate jobs using workflows
