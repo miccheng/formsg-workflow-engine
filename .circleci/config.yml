@@ -9,7 +9,7 @@ orbs:
   node: circleci/node@7.0.0
 
 jobs:
-  unit-tests:
+  integration-tests:
     docker:
       - image: cimg/base:stable
       - image: cimg/postgres:17.0
@@ -29,7 +29,17 @@ jobs:
           npx nx prisma-push formsg-workflow-engine && \
           npx nx prisma-generate formsg-workflow-engine && \
           npx nx prisma-seed formsg-workflow-engine --script seed_data.ts
-      - run: npx nx run-many -t test -p formsg-workflow-engine temporal-workflows
+      - run: npx nx test temporal-workflows
+  unit-tests:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - node/install:
+          node-version: '20.18.1'
+      - node/install-packages
+      - run: cp env.sample .env
+      - run: npx nx test formsg-workflow-engine
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
@@ -37,3 +47,4 @@ workflows:
   test:
     jobs:
       - unit-tests
+      - integration-tests
