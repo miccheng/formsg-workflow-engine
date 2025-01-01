@@ -21,11 +21,17 @@ jobs:
           PGTZ: GMT+8
     steps:
       - checkout
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client
       - node/install:
           node-version: '20.18.1'
       - node/install-packages:
           cache-path: ~/.npm
       - run: cp env.sample .env
+      - run: |
+          npx nx prisma-push formsg-workflow-engine && \
+          npx nx prisma-generate formsg-workflow-engine && \
+          npx nx prisma-seed formsg-workflow-engine --script seed_data.ts
       - run: npx nx run-many -t test -p formsg-workflow-engine temporal-workflows
 
 # Orchestrate jobs using workflows
