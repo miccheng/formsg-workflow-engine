@@ -25,7 +25,7 @@ jobs:
           node-version: '20.18.1'
       - node/install-packages:
           cache-path: ~/.npm
-      - run: cp .env.example .env
+      - run: cp env.sample .env
       - run: npx nx run-many -t test -p formsg-workflow-engine temporal-workflows
 
 # Orchestrate jobs using workflows
