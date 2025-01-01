@@ -21,8 +21,6 @@ jobs:
           PGTZ: GMT+8
     steps:
       - checkout
-      - run: sudo apt-get update
-      - run: sudo apt-get install postgresql-client
       - node/install:
           node-version: '20.18.1'
       - node/install-packages
