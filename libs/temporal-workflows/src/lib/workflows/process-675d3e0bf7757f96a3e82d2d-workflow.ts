@@ -75,6 +75,14 @@ export const process675d3e0bf7757f96a3e82d2dWorkflow = async (
       return 'Email is sent';
     } else {
       log.error('Verification code is not valid', { verificationCodeResult });
+
+      const emailResult = await emailActivity({
+        email: formDTO.email,
+        subject: 'Verification code is not valid',
+        message: `Hi ${formDTO.submitter}, Verification code is not valid. Please try again.`,
+      });
+      log.info('Email sent for invalid entry', { emailResult });
+
       return 'Verification code is not valid';
     }
   } else {

@@ -11,9 +11,16 @@ export const validateVerificationCodeActivity = async (
     process.env.VERIFICATION_API || 'http://localhost:8001'
   }/verify`;
 
-  const response = await postRequest(url, {
-    verificationCode,
-  });
+  try {
+    const response = await postRequest(url, {
+      verificationCode,
+    });
 
-  return response.status === 'OK' ? 'OK' : 'NOT_OK';
+    return response.status === 'OK' ? 'OK' : 'NOT_OK';
+  } catch (error) {
+    if (error.response.status === 400) {
+      return error.response.data?.status;
+    }
+    throw error;
+  }
 };
