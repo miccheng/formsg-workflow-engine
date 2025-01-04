@@ -1,9 +1,16 @@
-import { Worker } from '@temporalio/worker';
+import { Worker, NativeConnection } from '@temporalio/worker';
 import { AllActivities } from '@formsg-workflow-engine/temporal-workflows';
 
 async function run() {
+  const connectionOptions = {
+    address: process.env.TEMPORAL_HOST || 'localhost:7233',
+  };
+
+  const connection = await NativeConnection.connect(connectionOptions);
+
   const workers = await Promise.all([
     Worker.create({
+      connection,
       workflowsPath: require.resolve(
         '../../../libs/temporal-workflows/src/lib/all-workflows.js'
       ),
@@ -11,6 +18,7 @@ async function run() {
       taskQueue: 'formsg-workflow-engine',
     }),
     Worker.create({
+      connection,
       workflowsPath: require.resolve(
         '../../../libs/temporal-workflows/src/lib/all-workflows.js'
       ),

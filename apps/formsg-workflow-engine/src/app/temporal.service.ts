@@ -15,7 +15,11 @@ export class TemporalService {
   client: Client;
 
   async _connectToTemporal(): Promise<Client> {
-    const connection = await Connection.connect();
+    const connectionOptions = {
+      address: process.env.TEMPORAL_HOST || 'localhost:7233',
+    };
+
+    const connection = await Connection.connect(connectionOptions);
     this.client = new Client({ connection });
     return this.client;
   }
