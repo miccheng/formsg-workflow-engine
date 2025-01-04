@@ -4,6 +4,7 @@ import type * as validateEmailActivities from '../activities/validate-email-acti
 import type * as retrieveSubmissionActivities from '../activities/retrieve-submission-activity';
 import type * as emailActivities from '../activities/email-activity';
 import type * as validateVerificationCodeActivities from '../activities/validate-verification-code-activity';
+import type * as sendTelegramActivities from '../activities/send-telegram-activity';
 
 import {
   type FormDefinition,
@@ -31,6 +32,12 @@ const { validateVerificationCodeActivity } = proxyActivities<
 >({
   startToCloseTimeout: '1 minute',
 });
+
+const { sendTelegramActivity } = proxyActivities<typeof sendTelegramActivities>(
+  {
+    startToCloseTimeout: '1 minute',
+  }
+);
 
 const definition: FormDefinition = {
   emailField: 'Email',
@@ -82,6 +89,10 @@ export const process675d3e0bf7757f96a3e82d2dWorkflow = async (
         message: `Hi ${formDTO.submitter}, Verification code is not valid. Please try again.`,
       });
       log.info('Email sent for invalid entry', { emailResult });
+
+      await sendTelegramActivity({
+        message: `Submission with ID ${submissionId} has invalid verification code`,
+      });
 
       return 'Verification code is not valid';
     }

@@ -1,0 +1,16 @@
+@botToken={{$dotenv TELEGRAM_BOT_TOKEN}}
+@chatId={{$dotenv TELEGRAM_ALERT_CHANNEL}}
+
+
+### Info about the Bot
+POST https://api.telegram.org/bot{{botToken}}/getMe HTTP/1.1
+
+
+### Send a message to a Group
+POST https://api.telegram.org/bot{{botToken}}/sendMessage HTTP/1.1
+content-type: application/json
+
+{
+    "chat_id": "{{chatId}}",
+    "text": "Hello, Pearlyna!"
+}
