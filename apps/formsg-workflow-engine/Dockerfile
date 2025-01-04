@@ -9,16 +9,24 @@ FROM docker.io/node:lts-alpine
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
+RUN apk update \
+  && apk add --no-cache openssl\
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/cache/apk/*
+
 WORKDIR /app
 
 RUN addgroup --system formsg-workflow-engine && \
-          adduser --system -G formsg-workflow-engine formsg-workflow-engine
+  adduser --system -G formsg-workflow-engine formsg-workflow-engine
 
 COPY dist/apps/formsg-workflow-engine formsg-workflow-engine/
+COPY apps/formsg-workflow-engine/prisma formsg-workflow-engine/prisma/
 RUN chown -R formsg-workflow-engine:formsg-workflow-engine .
 
 # You can remove this install step if you build with `--bundle` option.
 # The bundled output will include external dependencies.
 RUN npm --prefix formsg-workflow-engine --omit=dev -f install
+RUN cd formsg-workflow-engine && \
+  npx -y prisma generate --schema prisma/schema.prisma
 
 CMD [ "node", "formsg-workflow-engine" ]

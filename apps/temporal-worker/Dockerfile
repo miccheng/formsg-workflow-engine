@@ -4,21 +4,22 @@
 # Tip: Modify "docker-build" options in project.json to change docker build args.
 #
 # Run the container with `docker run -p 3000:3000 -t temporal-worker`.
-FROM docker.io/node:lts-alpine
+FROM docker.io/node:lts-slim
 
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
+RUN apt-get update -y && apt-get install -y openssl && apt-get clean
+
 WORKDIR /app
 
-RUN addgroup --system temporal-worker && \
-          adduser --system -G temporal-worker temporal-worker
-
 COPY dist/apps/temporal-worker temporal-worker/
-RUN chown -R temporal-worker:temporal-worker .
+COPY apps/formsg-workflow-engine/prisma temporal-worker/prisma/
 
 # You can remove this install step if you build with `--bundle` option.
 # The bundled output will include external dependencies.
 RUN npm --prefix temporal-worker --omit=dev -f install
+RUN cd temporal-worker && \
+  npx -y prisma generate --schema prisma/schema.prisma
 
 CMD [ "node", "temporal-worker" ]
