@@ -1,4 +1,13 @@
 services:
+  # web:
+  #   image: formsg-workflow-engine
+  #   ports:
+  #     - 3000:3000
+  #   env_file: apps.env
+  # worker:
+  #   image: temporal-worker
+  #   env_file: apps.env
+
   db:
     image: postgres:17
     restart: always

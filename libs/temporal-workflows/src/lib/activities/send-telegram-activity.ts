@@ -8,6 +8,12 @@ type TelegramActivityInput = {
 export const sendTelegramActivity = async (
   options: TelegramActivityInput
 ): Promise<string> => {
+  if (
+    !process.env.TELEGRAM_SEND_ALERTS ||
+    process.env.TELEGRAM_SEND_ALERTS === 'false'
+  )
+    return 'Telegram alerts are disabled';
+
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_ALERT_CHANNEL;
 

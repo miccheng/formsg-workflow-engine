@@ -1,12 +1,15 @@
 # Define default target
 .DEFAULT_GOAL := help
-.PHONEY: help build run worker dbmigrate dbseed up stop down ps setup reset teardown test
+.PHONEY: help build docker-build run worker dbmigrate dbseed up stop down ps setup reset teardown test
 
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 build: ## Builds all the things
 	npx nx run-many -t build -p temporal-workflows temporal-worker formsg-workflow-engine
+
+docker-build: ## Build Docker images
+	npx nx run-many -t docker-build -p formsg-workflow-engine temporal-worker
 
 run: ## Start the NestJS app
 	npx nx serve formsg-workflow-engine

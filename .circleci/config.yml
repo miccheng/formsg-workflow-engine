@@ -40,11 +40,44 @@ jobs:
       - node/install-packages
       - run: cp env.sample .env
       - run: npx nx test formsg-workflow-engine
+  docker-build-formsg-workflow-engine:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - node/install:
+          node-version: '20.18.1'
+      - node/install-packages
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: cp env.sample .env
+      - run: npx nx prisma-generate formsg-workflow-engine
+      - run: npx nx docker-build formsg-workflow-engine
+  docker-build-temporal-worker:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - node/install:
+          node-version: '20.18.1'
+      - node/install-packages
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: cp env.sample .env
+      - run: npx nx prisma-generate formsg-workflow-engine
+      - run: npx nx docker-build temporal-worker
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  test:
+  test_and_build:
     jobs:
       - unit-tests
       - integration-tests
+      - docker-build-formsg-workflow-engine:
+          requires:
+            - unit-tests
+      - docker-build-temporal-worker:
+          requires:
+            - unit-tests
+            - integration-tests

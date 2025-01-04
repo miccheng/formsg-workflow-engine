@@ -53,6 +53,10 @@
           "buildTarget": "temporal-worker:build:production"
         }
       }
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/temporal-worker/Dockerfile . -t temporal-worker"
     }
   }
 }
