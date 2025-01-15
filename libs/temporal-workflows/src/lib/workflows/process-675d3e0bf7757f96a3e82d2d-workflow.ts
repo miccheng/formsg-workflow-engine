@@ -1,4 +1,6 @@
-import { proxyActivities, log } from '@temporalio/workflow';
+import { proxyActivities, log, executeChild } from '@temporalio/workflow';
+
+import { notificationWorkflow } from './notifification-workflow';
 
 import type * as validateEmailActivities from '../activities/validate-email-activity';
 import type * as retrieveSubmissionActivities from '../activities/retrieve-submission-activity';
@@ -72,14 +74,23 @@ export const process675d3e0bf7757f96a3e82d2dWorkflow = async (
     if (verificationCodeResult === 'OK') {
       log.info('Verification code is valid', { verificationCodeResult });
 
-      const emailResult = await emailActivity({
-        email: formDTO.email,
-        subject: 'Thank you for your submission',
-        message: `Hi ${formDTO.submitter}, Thank you for your submission`,
-      });
-      log.info('Email sent', { emailResult });
+      const responseArray = await Promise.all([
+        executeChild(notificationWorkflow, {
+          args: [
+            '675d3e0bf7757f96a3e82d2d',
+            submissionId,
+            formDTO.fields?.verificationCode?.answer,
+          ],
+          workflowId: `notify-${submissionId}`,
+        }),
+        emailActivity({
+          email: formDTO.email,
+          subject: 'Thank you for your submission',
+          message: `Hi ${formDTO.submitter}, Thank you for your submission`,
+        }),
+      ]);
 
-      return 'Email is sent';
+      return responseArray.join('|');
     } else {
       log.error('Verification code is not valid', { verificationCodeResult });
 

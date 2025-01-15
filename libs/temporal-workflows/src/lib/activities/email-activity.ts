@@ -11,7 +11,7 @@ type EmailActivityInput = {
 
 export const emailActivity = async (
   emailDeliveryOptions: EmailActivityInput
-): Promise<boolean> => {
+): Promise<string> => {
   const transport = nodemailer.createTransport({
     host: `${process.env.SMTP_HOST}`,
     port: process.env.SMTP_PORT,
@@ -39,5 +39,5 @@ export const emailActivity = async (
 
   log.info('Email sent', { messageId: info.messageId });
 
-  return true;
+  return 'Email sent';
 };

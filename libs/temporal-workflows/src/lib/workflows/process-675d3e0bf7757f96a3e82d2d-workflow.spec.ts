@@ -70,7 +70,8 @@ import type * as activities from '../all-activities';
 const mockActivities: Partial<typeof activities> = {
   ...originalActivities,
   retrieveSubmissionActivity: async () => mockResponse,
-  emailActivity: async () => true,
+  emailActivity: async () => 'Email is sent',
+  notifyRemoteApiActivity: async () => 'Remote API sent',
 };
 
 describe('process675d3e0bf7757f96a3e82d2dWorkflow', () => {
@@ -94,10 +95,12 @@ describe('process675d3e0bf7757f96a3e82d2dWorkflow', () => {
       testEnv.client.workflow.execute(process675d3e0bf7757f96a3e82d2dWorkflow, {
         workflowId: 'test1',
         taskQueue: 'test',
-        args: ['submissionId'],
+        args: ['submissionId1234'],
       })
     );
 
-    expect(result).toEqual('Email is sent');
+    expect(result).toEqual(
+      'Notification sent for submissionId1234|Email is sent'
+    );
   });
 });
