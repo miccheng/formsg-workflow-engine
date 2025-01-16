@@ -20,7 +20,7 @@
           "body": "{\n  \"status\": \"OK\"\n}",
           "latency": 0,
           "statusCode": 201,
-          "label": "",
+          "label": "Valid response by default",
           "headers": [],
           "bodyType": "INLINE",
           "filePath": "",
@@ -31,6 +31,33 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "caad7cae-869c-4cf3-97da-fc6021cb0493",
+          "body": "{\n  \"status\": \"NOT_OK\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "Return 500 if verification code starts with K",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "verificationCode",
+              "value": "^K.*",
+              "invert": false,
+              "operator": "regex_i"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
           "crudKey": "id",
           "callbacks": []
         }

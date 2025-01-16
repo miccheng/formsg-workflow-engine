@@ -32,8 +32,13 @@ content-type: application/json
 POST http://localhost:8002/api/appeals HTTP/1.1
 content-type: application/json
 
-{"name": "details"}
+{"verificationCode": "DABC1234"}
 
+### Mock Remote API (NOT_OK) - anything starting with "K"
+POST http://localhost:8002/api/appeals HTTP/1.1
+content-type: application/json
+
+{"verificationCode": "KABC1234"}
 
 ### Add Scheduler
 POST http://localhost:3000/api/scheduler HTTP/1.1

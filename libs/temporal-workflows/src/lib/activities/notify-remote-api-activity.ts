@@ -12,12 +12,14 @@ export const notifyRemoteApiActivity = async (
 ): Promise<string> => {
   const remoteApi = process.env.REMOTE_DATA_API;
 
-  const response = await postRequest(`${remoteApi}/appeals`, options);
+  try {
+    const response = await postRequest(`${remoteApi}/appeals`, options);
 
-  log.info('Remote API message sent:', { response });
-  if (response.ok) {
-    return 'Remote API sent';
-  } else {
-    return 'Unable to send';
+    return response.status === 'OK' ? 'OK' : 'NOT_OK';
+  } catch (error) {
+    if (error.response.status === 400) {
+      return error.response.data?.status;
+    }
+    throw error;
   }
 };
