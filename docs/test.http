@@ -48,3 +48,21 @@ content-type: application/json
 
 ### Delete Scheduler
 DELETE http://localhost:3000/api/scheduler?formId=675d3e0bf7757f96a3e82d2d HTTP/1.1
+
+### Valid Verification Code
+POST http://localhost:3000/api/verification-code HTTP/1.1
+content-type: application/json
+
+{"verificationCode": "ABCD1234"}
+
+### Invalid Verification Code
+POST http://localhost:3000/api/verification-code HTTP/1.1
+content-type: application/json
+
+{"verificationCode": "DBCD1234"}
+
+### Invalid Verification Code Format
+POST http://localhost:3000/api/verification-code HTTP/1.1
+content-type: application/json
+
+{"verificationCode": "1234ABVC"}

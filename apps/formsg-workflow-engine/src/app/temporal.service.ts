@@ -136,4 +136,27 @@ export class TemporalService {
     );
     await handle.cancel();
   }
+
+  async checkVerificationCode(
+    workflowId: string,
+    code: string
+  ): Promise<{ valid: boolean; message: string }> {
+    if (!this.client) {
+      await this._connectToTemporal();
+    }
+    Logger.debug(`Checking Verification Code: ${workflowId}`);
+
+    const result = await this.client.workflow.execute(
+      AllWorkflows.checkVerificationCodeWorkflow,
+      {
+        taskQueue: 'formsg-workflow-engine',
+        workflowId: `verify-code-${workflowId}`,
+        args: [code],
+      }
+    );
+
+    Logger.debug(`Verification Code Result: ${result}`);
+
+    return { valid: result === 'Verification code is valid', message: result };
+  }
 }

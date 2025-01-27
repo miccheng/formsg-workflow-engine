@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { SubmissionsController } from './submissions.controller';
 import { SchedulerController } from './scheduler.controller';
 import { ApprovalRequestController } from './approval-request.controller';
+import { VerificationCodeController } from './verification-code.controller';
 import { AppService } from './app.service';
 import { SubmissionService } from './submission.service';
 import { TemporalService } from './temporal.service';
@@ -14,6 +15,7 @@ import { TemporalService } from './temporal.service';
     SubmissionsController,
     SchedulerController,
     ApprovalRequestController,
+    VerificationCodeController,
   ],
   providers: [AppService, SubmissionService, TemporalService],
 })
