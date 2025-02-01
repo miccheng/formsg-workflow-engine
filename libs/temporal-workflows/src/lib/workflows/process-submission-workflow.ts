@@ -12,14 +12,16 @@ const { persistSubmissionActivity } = proxyActivities<
 export const processSubmissionWorkflow = async (
   formId: string,
   submissionId: string,
-  formData: any
+  formData: any,
+  createdAt?: string
 ): Promise<string> => {
   log.info('Sending Notifications', { formId });
 
   const persistenceResult = await persistSubmissionActivity(
     formId,
     submissionId,
-    formData
+    formData,
+    createdAt
   );
 
   if (persistenceResult === 'PERSISTED_SUBMISSION') {
