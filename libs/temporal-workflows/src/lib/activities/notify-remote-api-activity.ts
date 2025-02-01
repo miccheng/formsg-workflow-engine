@@ -1,4 +1,3 @@
-import { log } from '@temporalio/activity';
 import { postRequest } from '../helpers/http-request-helper';
 
 type RemoteApiInput = {
