@@ -37,7 +37,7 @@ export const parseSubmissionModel = (
         : field.question;
       newResponse.fields[fieldName] = {
         question: field.question,
-        fieldType: field.fieldType,
+        fieldType: field?.fieldType,
         answer: field.answer,
       };
     }

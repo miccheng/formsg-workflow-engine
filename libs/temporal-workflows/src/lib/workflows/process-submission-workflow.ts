@@ -1,4 +1,4 @@
-import { proxyActivities, log, startChild } from '@temporalio/workflow';
+import { proxyActivities, log, executeChild } from '@temporalio/workflow';
 import { WorkflowTable } from '../workflow-table';
 
 import type * as persistSubmissionActivities from '../activities/persist-submission-activity';
@@ -25,11 +25,13 @@ export const processSubmissionWorkflow = async (
   );
 
   if (persistenceResult === 'PERSISTED_SUBMISSION') {
-    await startChild(WorkflowTable[formId], {
-      args: [formId, submissionId, formData],
+    const result = await executeChild(WorkflowTable[formId], {
+      args: [submissionId],
       workflowId: `process-${formId}-${submissionId}`,
     });
-  }
 
-  return `SUBMISSION_PROCESSED`;
+    return `SUBMISSION_PROCESSED: ${result}`;
+  } else {
+    return `SUBMISSION_HAD_BEEN_PROCESSED: ${persistenceResult}`;
+  }
 };

@@ -31,7 +31,7 @@ export const formsgCsvParserActivity = async (
     return {
       submissionId: submissionId,
       createdAt: createdAt,
-      formData: formData,
+      formData: { responses: formData },
     };
   });
 
