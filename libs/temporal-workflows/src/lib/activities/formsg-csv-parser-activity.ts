@@ -2,7 +2,6 @@ import { parse } from 'csv-parse/sync';
 import { log } from '@temporalio/activity';
 
 export const formsgCsvParserActivity = async (
-  formId: string,
   csvContent: string
 ): Promise<any> => {
   const content = parse(csvContent, {
@@ -30,7 +29,6 @@ export const formsgCsvParserActivity = async (
     }, []);
 
     return {
-      formId: formId,
       submissionId: submissionId,
       createdAt: createdAt,
       formData: formData,

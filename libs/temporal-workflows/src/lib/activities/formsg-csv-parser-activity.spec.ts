@@ -19,10 +19,9 @@ describe('formsgCsvParserActivity', () => {
 
   it('should parse CSV', async () => {
     expect(
-      await mockTemporalEnv.run(formsgCsvParserActivity, 'formId', mockData)
+      await mockTemporalEnv.run(formsgCsvParserActivity, mockData)
     ).toEqual([
       {
-        formId: 'formId',
         submissionId: '675d3f0bf7757f96a3e83a45',
         createdAt: '14 Dec 2024 04:17:15 PM',
         formData: [
@@ -37,7 +36,6 @@ describe('formsgCsvParserActivity', () => {
         ],
       },
       {
-        formId: 'formId',
         submissionId: '675e80152ee4ed9764ab5703',
         createdAt: '15 Dec 2024 03:07:01 PM',
         formData: [
