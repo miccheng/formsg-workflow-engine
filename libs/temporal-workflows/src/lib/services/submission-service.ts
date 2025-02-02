@@ -1,11 +1,13 @@
-import * as formsg from '@opengovsg/formsg-sdk';
+import formsg from '@opengovsg/formsg-sdk';
 import {
   FormField,
   DecryptedFile,
   DecryptParams,
 } from '@opengovsg/formsg-sdk/dist/types';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
+import { type LoggerService as NestLogger } from '@nestjs/common';
+import { type Logger as TemporalLogger } from '@temporalio/common/lib/logger';
 
 export type EncryptedContent = {
   requestBody: DecryptParams & {
@@ -31,6 +33,12 @@ export type DecryptionParam = {
 };
 
 export class SubmissionService {
+  logger: NestLogger | TemporalLogger;
+
+  constructor(logger?: NestLogger | TemporalLogger) {
+    this.logger = logger ? logger : console;
+  }
+
   async decryptFormData(params: DecryptionParam): Promise<{
     message: string;
     formData: FormField[];
@@ -49,11 +57,11 @@ export class SubmissionService {
         formSecretKey,
         formData
       );
-      // Logger.debug('Decrypted data', submission);
+      this.logger.debug('Decrypted data', submission);
 
       Object.entries(submission.attachments).forEach(
         ([attachmentName, attachment]) => {
-          // Logger.debug('Decrypted attachment', attachment);
+          this.logger.debug('Decrypted attachment', attachment);
 
           const attachmentDir = path.join(
             process.env.ATTACHMENT_PATH,
@@ -61,9 +69,8 @@ export class SubmissionService {
             formData.submissionId,
             attachmentName
           );
-          // Logger.debug(`Creating attachment directory ${attachmentDir}`);
+          this.logger.debug(`Creating attachment directory ${attachmentDir}`);
           fs.mkdirSync(attachmentDir, { recursive: true });
-          // Logger.debug(status);
 
           const destFilePath = path.join(attachmentDir, attachment.filename);
           fs.writeFileSync(destFilePath, attachment.content);
@@ -82,7 +89,7 @@ export class SubmissionService {
       };
     } else {
       const submission = FormSG.crypto.decrypt(formSecretKey, formData);
-      // Logger.debug('Decrypted data', submission);
+      this.logger.debug('Decrypted data', submission);
       return {
         message: 'Successfully decrypted form data',
         formData: submission.responses,

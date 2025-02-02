@@ -26,7 +26,7 @@ const { emailActivity } = proxyActivities<typeof emailActivities>({
 
 const definition: FormDefinition = {
   emailField: 'Email',
-  submitterField: 'Full Name',
+  submitterField: 'Email',
   fields: {
     'Supporting Doc': 'supportingDoc',
     'More Document': 'moreDocument',

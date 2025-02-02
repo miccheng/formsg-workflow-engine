@@ -5,7 +5,6 @@ import { SchedulerController } from './scheduler.controller';
 import { ApprovalRequestController } from './approval-request.controller';
 import { VerificationCodeController } from './verification-code.controller';
 import { AppService } from './app.service';
-import { SubmissionService } from './submission.service';
 import { TemporalService } from './temporal.service';
 
 @Module({
@@ -17,6 +16,6 @@ import { TemporalService } from './temporal.service';
     ApprovalRequestController,
     VerificationCodeController,
   ],
-  providers: [AppService, SubmissionService, TemporalService],
+  providers: [AppService, TemporalService],
 })
 export class AppModule {}

@@ -20,7 +20,7 @@ export const decryptFormsgActivity = async (
       where: { submissionId },
     });
 
-    const service = new SubmissionService();
+    const service = new SubmissionService(log);
     const response = await service.decryptFormData({
       signature: submission.encryptedContent['requestDetails'].signature,
       postURI: submission.encryptedContent['requestDetails'].postURI,
@@ -35,7 +35,7 @@ export const decryptFormsgActivity = async (
       data: { formData: response.formData },
     });
 
-    return 'Decryption successful';
+    return 'DECRYPTION_SUCCESSFUL';
   } catch (error) {
     log.error('Error decrypting FormSG submission', {
       formId,

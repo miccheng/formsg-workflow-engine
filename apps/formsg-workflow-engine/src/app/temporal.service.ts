@@ -29,10 +29,10 @@ export class TemporalService {
       await this._connectToTemporal();
     }
 
-    await this.client.workflow.start(WorkflowTable[formId], {
+    await this.client.workflow.start(AllWorkflows.processSubmissionWorkflow, {
       taskQueue: 'formsg-workflow-engine',
-      workflowId: `process-${formId}-${submissionId}`,
-      args: [submissionId],
+      workflowId: `new-submission-${formId}-${submissionId}`,
+      args: [formId, submissionId],
     });
   }
 
