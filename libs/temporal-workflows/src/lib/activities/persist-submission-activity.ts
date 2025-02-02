@@ -1,5 +1,5 @@
 import { log } from '@temporalio/activity';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, type Submissions } from '@prisma/client';
 import { DateTime } from 'luxon';
 const prisma = new PrismaClient();
 
@@ -8,12 +8,12 @@ export const persistSubmissionActivity = async (
   submissionId: string,
   formData: any,
   createdAt?: string
-): Promise<string> => {
+): Promise<Submissions> => {
   const originalSubmission = await prisma.submissions.findFirst({
     where: { formId, submissionId },
   });
 
-  if (originalSubmission) return 'EXISTING_SUBMISSION';
+  if (originalSubmission) return originalSubmission;
 
   const data = {
     formId,
@@ -28,13 +28,13 @@ export const persistSubmissionActivity = async (
     ).toJSDate();
   }
 
-  const submission = await prisma.submissions.create({
+  const newSubmission = await prisma.submissions.create({
     data: data,
   });
 
   log.info(
-    `Persisted Submission: FormID: ${formId}, SubmissionID: ${submissionId}, DB ID: ${submission.id}`
+    `Persisted Submission: FormID: ${formId}, SubmissionID: ${submissionId}, DB ID: ${newSubmission.id}`
   );
 
-  return 'PERSISTED_SUBMISSION';
+  return newSubmission;
 };

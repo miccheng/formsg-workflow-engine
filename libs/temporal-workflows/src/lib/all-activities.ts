@@ -9,3 +9,4 @@ export * from './activities/notify-remote-api-activity';
 export * from './activities/formsg-csv-parser-activity';
 export * from './activities/get-file-contents-activity';
 export * from './activities/decrypt-formsg-activity';
+export * from './activities/complete-processing-activity';

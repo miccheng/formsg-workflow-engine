@@ -1,8 +1,10 @@
 import { proxyActivities, log, executeChild } from '@temporalio/workflow';
 import { WorkflowTable } from '../workflow-table';
+import { type Submissions, SubmissionStatus } from '@prisma/client';
 
 import type * as decryptFormsgActivities from '../activities/decrypt-formsg-activity';
 import type * as persistSubmissionActivities from '../activities/persist-submission-activity';
+import type * as completeProcessingActivities from '../activities/complete-processing-activity';
 
 const { decryptFormsgActivity } = proxyActivities<
   typeof decryptFormsgActivities
@@ -16,6 +18,12 @@ const { persistSubmissionActivity } = proxyActivities<
   startToCloseTimeout: '5 minute',
 });
 
+const { completeProcessingActivity } = proxyActivities<
+  typeof completeProcessingActivities
+>({
+  startToCloseTimeout: '5 minute',
+});
+
 export const processSubmissionWorkflow = async (
   formId: string,
   submissionId: string,
@@ -24,12 +32,12 @@ export const processSubmissionWorkflow = async (
 ): Promise<string> => {
   log.info('Sending Notifications', { formId });
 
-  let result: string;
+  let submission: Submissions;
 
   if (!formData) {
-    result = await decryptFormsgActivity(formId, submissionId);
+    submission = await decryptFormsgActivity(formId, submissionId);
   } else {
-    result = await persistSubmissionActivity(
+    submission = await persistSubmissionActivity(
       formId,
       submissionId,
       formData,
@@ -37,14 +45,16 @@ export const processSubmissionWorkflow = async (
     );
   }
 
-  if (['PERSISTED_SUBMISSION', 'DECRYPTION_SUCCESSFUL'].includes(result)) {
+  if (submission.status !== SubmissionStatus.PROCESSED) {
     const childWorkflowResult = await executeChild(WorkflowTable[formId], {
       args: [submissionId],
       workflowId: `process-${formId}-${submissionId}`,
     });
 
+    await completeProcessingActivity(formId, submissionId);
+
     return `SUBMISSION_PROCESSED: ${childWorkflowResult}`;
   } else {
-    return `SUBMISSION_HAD_BEEN_PROCESSED: ${result}`;
+    return `SUBMISSION_HAD_BEEN_PROCESSED: ${submissionId}`;
   }
 };

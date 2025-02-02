@@ -1,5 +1,9 @@
 import { log } from '@temporalio/activity';
-import { PrismaClient } from '@prisma/client';
+import {
+  PrismaClient,
+  SubmissionStatus,
+  type Submissions,
+} from '@prisma/client';
 const prisma = new PrismaClient();
 
 import { SubmissionService } from '../services/submission-service';
@@ -7,7 +11,7 @@ import { SubmissionService } from '../services/submission-service';
 export const decryptFormsgActivity = async (
   formId: string,
   submissionId: string
-): Promise<string> => {
+): Promise<Submissions> => {
   log.info('Decrypting FormSG submission', { formId, submissionId });
 
   try {
@@ -17,7 +21,7 @@ export const decryptFormsgActivity = async (
     });
 
     const submission = await prisma.submissions.findFirstOrThrow({
-      where: { submissionId },
+      where: { formId, submissionId },
     });
 
     const service = new SubmissionService(log);
@@ -28,14 +32,15 @@ export const decryptFormsgActivity = async (
       formData: submission.encryptedContent['requestBody'],
     });
 
-    submission.formData = response.formData;
-
-    await prisma.submissions.update({
+    const updatedSubmission = await prisma.submissions.update({
       where: { id: submission.id },
-      data: { formData: response.formData },
+      data: {
+        formData: response.formData,
+        status: SubmissionStatus.DECRYPTED,
+      },
     });
 
-    return 'DECRYPTION_SUCCESSFUL';
+    return updatedSubmission;
   } catch (error) {
     log.error('Error decrypting FormSG submission', {
       formId,
