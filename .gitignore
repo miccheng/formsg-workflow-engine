@@ -44,3 +44,4 @@ Thumbs.db
 .gitpair/pairing.json
 .env
 *.env
+attachments/*

@@ -11,7 +11,16 @@ async function main() {
     },
   });
 
-  console.log({ testForm });
+  const testFormWithAttachments = await prisma.sGForms.upsert({
+    where: { formId: '679e22730bad842cc4b76974' },
+    update: {},
+    create: {
+      formId: '679e22730bad842cc4b76974',
+      formSecret: `${process.env.FORM2_SECRET_KEY}`,
+    },
+  });
+
+  console.log({ testForm, testFormWithAttachments });
 }
 
 main()

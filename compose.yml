@@ -4,9 +4,13 @@ services:
   #   ports:
   #     - 3000:3000
   #   env_file: apps.env
+  #   volumes:
+  #     - ./attachments:/attachments
   # worker:
   #   image: temporal-worker
   #   env_file: apps.env
+  #   volumes:
+  #     - ./attachments:/attachments
 
   db:
     image: postgres:17
