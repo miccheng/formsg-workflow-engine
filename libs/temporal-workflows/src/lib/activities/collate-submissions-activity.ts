@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { DateTime } from 'luxon';
 import { stringify } from 'csv-stringify/sync';
+import { FormField } from '@opengovsg/formsg-sdk/dist/types';
 const prisma = new PrismaClient();
 
 export const collateSubmissionsActivity = async (
@@ -14,11 +15,10 @@ export const collateSubmissionsActivity = async (
   });
 
   const records = submissions.map((submission) => {
+    const formData = submission.formData as FormField[];
+
     return Object.fromEntries(
-      submission.formData['responses'].map((response) => [
-        response.question,
-        response.answer,
-      ])
+      formData.map((response) => [response.question, response.answer])
     );
   });
 

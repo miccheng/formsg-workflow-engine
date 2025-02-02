@@ -61,7 +61,7 @@ export const process675d3e0bf7757f96a3e82d2dWorkflow = async (
 
   const submissionData = await retrieveSubmissionActivity(submissionId);
 
-  const formDTO = parseSubmissionModel(definition, submissionData['responses']);
+  const formDTO = parseSubmissionModel(definition, submissionData);
   log.info('Parsed submission data', { formDTO });
 
   const emailValidationResult = await validateEmailActivity(formDTO.email);
