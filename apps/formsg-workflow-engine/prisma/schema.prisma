@@ -19,12 +19,13 @@ model SGForms {
 }
 
 model Submissions {
-  id           Int      @id @default(autoincrement())
-  formId       String   @map("form_id") @db.VarChar(255)
-  submissionId String   @map("submission_id") @db.VarChar(255)
-  formData     Json     @map("form_data")
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id               Int      @id @default(autoincrement())
+  formId           String   @map("form_id") @db.VarChar(255)
+  submissionId     String   @map("submission_id") @db.VarChar(255)
+  formData         Json?    @map("form_data")
+  encryptedContent Json?    @map("encrypted_content")
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@index([formId])
   @@map("submissions")

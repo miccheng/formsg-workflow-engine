@@ -41,18 +41,27 @@ export class SubmissionsController {
         request.headers['x-forwarded-proto'] !== undefined
           ? request.headers['x-forwarded-proto']
           : request.protocol;
-      const response = this.submissionService.decryptFormData(
-        request.get('X-FormSG-Signature'),
-        `${protocol}://${request.hostname}${request.path}`,
-        theForm.formSecret,
-        request.body.data
-      );
+
+      const requestDetails = {
+        signature: request.get('X-FormSG-Signature'),
+        postURI: `${protocol}://${request.hostname}${request.path}`,
+      };
+
+      const response = await this.submissionService.decryptFormData({
+        ...requestDetails,
+        formSecretKey: theForm.formSecret,
+        formData: request.body.data,
+      });
 
       await prisma.submissions.create({
         data: {
           formId: request.body.data.formId,
           submissionId: request.body.data.submissionId,
           formData: response.formData,
+          encryptedContent: {
+            requestBody: request.body.data,
+            requestDetails: requestDetails,
+          },
         },
       });
 
