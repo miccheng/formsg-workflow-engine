@@ -24,34 +24,30 @@ describe('formsgCsvParserActivity', () => {
       {
         submissionId: '675d3f0bf7757f96a3e83a45',
         createdAt: '14 Dec 2024 04:17:15 PM',
-        formData: {
-          responses: [
-            { question: 'Full Name', answer: 'Michael Cheng' },
-            { question: 'Email', answer: 'michael@example.com' },
-            { question: 'Mobile number', answer: '+65987654321' },
-            { question: 'Date of Birth', answer: '25 Dec 2024' },
-            { question: 'Tell me a story', answer: '' },
-            { question: 'Verification Code', answer: '1234' },
-            { question: 'How smart are you', answer: 'Very' },
-            { question: 'How cool is Satish?', answer: '5' },
-          ],
-        },
+        formData: [
+          { question: 'Full Name', answer: 'Michael Cheng' },
+          { question: 'Email', answer: 'michael@example.com' },
+          { question: 'Mobile number', answer: '+65987654321' },
+          { question: 'Date of Birth', answer: '25 Dec 2024' },
+          { question: 'Tell me a story', answer: '' },
+          { question: 'Verification Code', answer: '1234' },
+          { question: 'How smart are you', answer: 'Very' },
+          { question: 'How cool is Satish?', answer: '5' },
+        ],
       },
       {
         submissionId: '675e80152ee4ed9764ab5703',
         createdAt: '15 Dec 2024 03:07:01 PM',
-        formData: {
-          responses: [
-            { question: 'Full Name', answer: 'Satish Appanasamy' },
-            { question: 'Email', answer: 'satish@example.com' },
-            { question: 'Mobile number', answer: '+658763388' },
-            { question: 'Date of Birth', answer: '25 Mar 1988' },
-            { question: 'Tell me a story', answer: 'Robinhood is soo cool!' },
-            { question: 'Verification Code', answer: '112' },
-            { question: 'How smart are you', answer: 'Very' },
-            { question: 'How cool is Satish?', answer: '5' },
-          ],
-        },
+        formData: [
+          { question: 'Full Name', answer: 'Satish Appanasamy' },
+          { question: 'Email', answer: 'satish@example.com' },
+          { question: 'Mobile number', answer: '+658763388' },
+          { question: 'Date of Birth', answer: '25 Mar 1988' },
+          { question: 'Tell me a story', answer: 'Robinhood is soo cool!' },
+          { question: 'Verification Code', answer: '112' },
+          { question: 'How smart are you', answer: 'Very' },
+          { question: 'How cool is Satish?', answer: '5' },
+        ],
       },
     ]);
   });
