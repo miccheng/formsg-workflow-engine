@@ -2,6 +2,7 @@ import { proxyActivities, log } from '@temporalio/workflow';
 import type * as retrieveSubmissionActivities from '../activities/retrieve-submission-activity';
 import type * as validateEmailActivities from '../activities/validate-email-activity';
 import type * as emailActivities from '../activities/email-activity';
+import type * as ocrActivities from '../activities/document-ocr-activity';
 
 import {
   type FormDefinition,
@@ -21,6 +22,10 @@ const { validateEmailActivity } = proxyActivities<
 });
 
 const { emailActivity } = proxyActivities<typeof emailActivities>({
+  startToCloseTimeout: '1 minute',
+});
+
+const { documentOcrActivity } = proxyActivities<typeof ocrActivities>({
   startToCloseTimeout: '1 minute',
 });
 
@@ -45,11 +50,25 @@ export const process679e22730bad842cc4b76974workflow = async (
 
   const emailValidationResult = await validateEmailActivity(formDTO.email);
 
+  const ocrResult = await documentOcrActivity(
+    formDTO.fields.supportingDoc.answer
+  );
+
   if (emailValidationResult) {
+    const fileName = formDTO.fields.supportingDoc.answer.split('/').pop();
+    const htmlDoc = `<html><head><title>HOCR</title></head><body>${ocrResult.hocr.replace(
+      /unknown/g,
+      fileName
+    )}<script src="https://unpkg.com/hocrjs"></script></body></html>`;
+
     await emailActivity({
       email: formDTO.email,
       subject: 'Thank you for your submission',
       message: `Hi ${formDTO.submitter}, Thank you for your submission`,
+      attachments: [
+        { filename: 'text.txt', content: ocrResult?.text },
+        { filename: 'hocr.html', content: htmlDoc },
+      ],
     });
   } else {
     log.error('Email is not valid', { emailValidationResult });
