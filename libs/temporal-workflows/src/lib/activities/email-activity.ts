@@ -6,7 +6,7 @@ type EmailActivityInput = {
   subject: string;
   message: string;
   messageHTML?: string;
-  attachments?: { filename: string; content: string }[];
+  attachments?: { filename: string; content?: string; path?: string }[];
 };
 
 export const emailActivity = async (

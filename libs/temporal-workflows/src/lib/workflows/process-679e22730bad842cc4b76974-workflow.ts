@@ -68,6 +68,7 @@ export const process679e22730bad842cc4b76974workflow = async (
       attachments: [
         { filename: 'text.txt', content: ocrResult?.text },
         { filename: 'hocr.html', content: htmlDoc },
+        { filename: fileName, path: formDTO.fields.supportingDoc.answer },
       ],
     });
   } else {
