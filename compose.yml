@@ -29,14 +29,11 @@ services:
       - 7233:7233
       - 8233:8233
   maildev:
-    image: maildev/maildev
+    image: dockage/mailcatcher
     container_name: maildev
     ports:
       - '1080:1080' # Web interface
       - '1025:1025' # SMTP server
-    environment:
-      - MAILDEV_SMTP_PORT=1025
-      - MAILDEV_UI_PORT=1080
     restart: unless-stopped
   mockapi:
     image: mockoon/cli
