@@ -25,6 +25,7 @@
     "nodemailer": "^6.9.16",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
+    "sharp": "^0.33.5",
     "tesseract.js": "^6.0.0"
   },
   "devDependencies": {

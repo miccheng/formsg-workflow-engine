@@ -56,9 +56,12 @@ export const process679e22730bad842cc4b76974workflow = async (
 
   if (emailValidationResult) {
     const fileName = formDTO.fields.supportingDoc.answer.split('/').pop();
+    const preprocessedFileName = ocrResult.preprocessedFilePath
+      .split('/')
+      .pop();
     const htmlDoc = `<html><head><title>HOCR</title></head><body>${ocrResult.hocr.replace(
       /unknown/g,
-      fileName
+      preprocessedFileName
     )}<script src="https://unpkg.com/hocrjs"></script></body></html>`;
 
     await emailActivity({
@@ -69,6 +72,10 @@ export const process679e22730bad842cc4b76974workflow = async (
         { filename: 'text.txt', content: ocrResult?.text },
         { filename: 'hocr.html', content: htmlDoc },
         { filename: fileName, path: formDTO.fields.supportingDoc.answer },
+        {
+          filename: preprocessedFileName,
+          path: ocrResult.preprocessedFilePath,
+        },
       ],
     });
   } else {
