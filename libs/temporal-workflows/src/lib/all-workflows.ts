@@ -2,6 +2,7 @@ export * from './workflows/process-submission-workflow';
 export * from './workflows/process-675d3e0bf7757f96a3e82d2d-workflow';
 export * from './workflows/collate-675d3e0bf7757f96a3e82d2d-workflow';
 export * from './workflows/process-679e22730bad842cc4b76974-workflow';
+export * from './workflows/process-67a708c9dcc3e09f3a3393f5-workflow';
 export * from './workflows/notifification-workflow';
 export * from './workflows/approval-needed-workflow';
 export * from './workflows/check-verification-code-workflow';

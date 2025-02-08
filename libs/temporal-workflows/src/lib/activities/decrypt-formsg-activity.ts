@@ -24,6 +24,10 @@ export const decryptFormsgActivity = async (
       where: { formId, submissionId },
     });
 
+    if (submission.status === SubmissionStatus.DECRYPTED) {
+      return submission;
+    }
+
     const service = new SubmissionService(log);
     const response = await service.decryptFormData({
       signature: submission.encryptedContent['requestDetails'].signature,

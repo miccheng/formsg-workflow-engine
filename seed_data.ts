@@ -20,7 +20,16 @@ async function main() {
     },
   });
 
-  console.log({ testForm, testFormWithAttachments });
+  const testFormForOCR = await prisma.sGForms.upsert({
+    where: { formId: '67a708c9dcc3e09f3a3393f5' },
+    update: {},
+    create: {
+      formId: '67a708c9dcc3e09f3a3393f5',
+      formSecret: `${process.env.FORM3_SECRET_KEY}`,
+    },
+  });
+
+  console.log({ testForm, testFormWithAttachments, testFormForOCR });
 }
 
 main()
