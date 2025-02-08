@@ -7,10 +7,14 @@ export type MetaMatchScore = {
   score: number;
 };
 
+export type MetaMatchResult = {
+  [key: string]: MetaMatchScore | { [key: string]: MetaMatchScore };
+};
+
 export const metadataMatchingActivity = async (
   metadata: string | string[],
-  search: { [key: string]: string }
-): Promise<{ [key: string]: MetaMatchScore }> => {
+  search: { [key: string]: string | string[] }
+): Promise<MetaMatchResult> => {
   log.info('metadataMatchingActivity');
 
   if (!(metadata instanceof Array)) {
@@ -26,7 +30,14 @@ export const metadataMatchingActivity = async (
 
   const result = {};
   Object.entries(search).forEach(([key, value]) => {
-    result[key] = fuse.search(value);
+    if (value instanceof Array) {
+      result[key] = {};
+      for (const v of value) {
+        result[key][v] = fuse.search(v);
+      }
+    } else {
+      result[key] = fuse.search(value);
+    }
   });
 
   log.info('result', result);

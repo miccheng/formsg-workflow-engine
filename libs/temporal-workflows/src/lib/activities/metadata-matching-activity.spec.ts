@@ -65,7 +65,11 @@ h “John Doe
 VKUTOERIKSSON<K<KANNA<KMARIA<KLLLKLLKLLKLKKLKLK
 LEFEB8F0TCLXXXL009078F9612109<<K<K<KLKLKKLKL
 `,
-      { name: 'eriksson anna maria', passport: 'L8988901C' },
+      {
+        name: 'eriksson anna maria',
+        passport: 'L8988901C',
+        dob: ['07 Sep 1986', '7 Sep 86'],
+      },
       {
         name: [
           {
@@ -86,6 +90,16 @@ LEFEB8F0TCLXXXL009078F9612109<<K<K<KLKLKKLKL
             score: 0.31998471754414587,
           },
         ],
+        dob: {
+          '07 Sep 1986': [],
+          '7 Sep 86': [
+            {
+              item: '/ I L8988901C F/F 07 SEP/SEP 86 XXX',
+              refIndex: 8,
+              score: 0.7711864637907508,
+            },
+          ],
+        },
       },
     ],
   ])('should match %s', async (metadata, search, expected) => {
