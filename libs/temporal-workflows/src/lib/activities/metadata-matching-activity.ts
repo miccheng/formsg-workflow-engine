@@ -7,8 +7,13 @@ export type MetaMatchScore = {
   score: number;
 };
 
+export type MetaMatchResultItem = {
+  searchStr: string;
+  matches: MetaMatchScore[];
+};
+
 export type MetaMatchResult = {
-  [key: string]: MetaMatchScore | { [key: string]: MetaMatchScore };
+  [key: string]: MetaMatchResultItem[];
 };
 
 export const metadataMatchingActivity = async (
@@ -30,17 +35,38 @@ export const metadataMatchingActivity = async (
 
   const result = {};
   Object.entries(search).forEach(([key, value]) => {
+    result[key] = [];
     if (value instanceof Array) {
-      result[key] = {};
       for (const v of value) {
-        result[key][v] = fuse.search(v);
+        result[key].push(...runFuzzSearch(v, fuse, true));
       }
     } else {
-      result[key] = fuse.search(value);
+      result[key].push(...runFuzzSearch(value, fuse));
     }
   });
 
   log.info('result', result);
+
+  return result;
+};
+
+const runFuzzSearch = (
+  searchStr: string,
+  fuse: Fuse<string>,
+  fullWord = false
+) => {
+  const fullStrMatches = fuse.search(searchStr);
+  if (fullStrMatches.length > 0 && fullStrMatches[0].score === 0) {
+    return [{ searchStr, matches: fullStrMatches }];
+  }
+
+  const result = [{ searchStr, matches: fullStrMatches }];
+
+  if (searchStr.includes(' ') && !fullWord) {
+    searchStr
+      .split(' ')
+      .forEach((s) => result.push({ searchStr: s, matches: fuse.search(s) }));
+  }
 
   return result;
 };
