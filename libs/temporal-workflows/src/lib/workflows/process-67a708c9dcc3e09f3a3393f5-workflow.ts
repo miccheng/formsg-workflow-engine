@@ -62,7 +62,9 @@ export const process67a708c9dcc3e09f3a3393f5Workflow = async (
 
   const emailValidationResult = await validateEmailActivity(formDTO.email);
 
-  const ocrResult = await documentOcrActivity(formDTO.fields.document.answer);
+  const ocrResult = await documentOcrActivity(
+    formDTO.fields.document.answer
+  )[0];
 
   const searchFields = {
     name: formDTO.submitter,
