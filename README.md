@@ -86,3 +86,6 @@ npx nx test temporal-workflows
 - [Approval Concepts](./docs/approval_concepts.md)
 - [NX Readme](./docs/README_NX.md)
 
+## PDF support
+
+Install ghostscript and graphicsmagick: <https://github.com/yakovmeister/pdf2image/blob/HEAD/docs/gm-installation.md>

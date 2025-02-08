@@ -9,7 +9,7 @@ FROM docker.io/node:lts-slim
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
-RUN apt-get update -y && apt-get install -y openssl && apt-get clean
+RUN apt-get update -y && apt-get install -y openssl ghostscript graphicsmagick && apt-get clean
 
 WORKDIR /app
 
