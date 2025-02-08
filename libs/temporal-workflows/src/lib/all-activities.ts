@@ -11,3 +11,4 @@ export * from './activities/get-file-contents-activity';
 export * from './activities/decrypt-formsg-activity';
 export * from './activities/complete-processing-activity';
 export * from './activities/document-ocr-activity';
+export * from './activities/metadata-matching-activity';
