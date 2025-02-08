@@ -62,68 +62,77 @@ export const process67a708c9dcc3e09f3a3393f5Workflow = async (
 
   const emailValidationResult = await validateEmailActivity(formDTO.email);
 
-  const ocrResult = await documentOcrActivity(
-    formDTO.fields.document.answer
-  )[0];
+  const ocrResult = await documentOcrActivity(formDTO.fields.document.answer);
 
-  const searchFields = {
-    name: formDTO.submitter,
-  };
-  switch (formDTO.fields.documentType.answer) {
-    case 'Travel Document':
-      searchFields['tdNumber'] = formDTO.fields.tdNumber.answer;
-      break;
-    case 'ID Card':
-      searchFields['idNumber'] = formDTO.fields.idNumber.answer;
-      break;
-    case 'Certificate':
-      searchFields['issuingOrganisation'] =
-        formDTO.fields.issuingOrganisation.answer;
-      break;
-    case 'Contract':
-      searchFields['companyName'] = formDTO.fields.companyName.answer;
-      break;
-    default:
-      break;
-  }
-  const metadataMatchingResult = await metadataMatchingActivity(
-    ocrResult.text,
-    searchFields
-  );
-  log.info('metadataMatchingResult', metadataMatchingResult);
+  if (ocrResult.length > 0) {
+    const searchFields = {
+      name: formDTO.submitter,
+    };
+    switch (formDTO.fields.documentType.answer) {
+      case 'Travel Document':
+        searchFields['tdNumber'] = formDTO.fields.tdNumber.answer;
+        break;
+      case 'ID Card':
+        searchFields['idNumber'] = formDTO.fields.idNumber.answer;
+        break;
+      case 'Certificate':
+        searchFields['issuingOrganisation'] =
+          formDTO.fields.issuingOrganisation.answer;
+        break;
+      case 'Contract':
+        searchFields['companyName'] = formDTO.fields.companyName.answer;
+        break;
+      default:
+        break;
+    }
 
-  if (emailValidationResult) {
-    const fileName = formDTO.fields.document.answer.split('/').pop();
-    const preprocessedFileName = ocrResult.preprocessedFilePath
-      .split('/')
-      .pop();
-    const htmlDoc = `<html><head><title>HOCR</title></head><body>${ocrResult.hocr.replace(
-      /unknown/g,
-      preprocessedFileName
-    )}<script src="https://unpkg.com/hocrjs"></script></body></html>`;
+    const fullMetadata = ocrResult.reduce((acc, curr) => {
+      acc.push(curr.text);
+      return acc;
+    }, []);
 
-    await emailActivity({
-      email: formDTO.email,
-      subject: 'Thank you for your submission',
-      message: `Hi ${formDTO.submitter}, Thank you for your submission`,
-      attachments: [
-        { filename: 'text.txt', content: ocrResult?.text },
-        { filename: 'hocr.html', content: htmlDoc },
-        {
-          filename: 'metadata_matching.json',
-          content: JSON.stringify(metadataMatchingResult),
-        },
-        { filename: fileName, path: formDTO.fields.document.answer },
-        {
-          filename: preprocessedFileName,
-          path: ocrResult.preprocessedFilePath,
-        },
-      ],
-    });
+    const metadataMatchingResult = await metadataMatchingActivity(
+      fullMetadata.join('\n'),
+      searchFields
+    );
+    log.info('metadataMatchingResult', metadataMatchingResult);
+
+    if (emailValidationResult) {
+      const fileName = formDTO.fields.document.answer.split('/').pop();
+      const preprocessedFileName = ocrResult[0].preprocessedFilePath
+        .split('/')
+        .pop();
+      const htmlDoc = `<html><head><title>HOCR</title></head><body>${ocrResult[0].hocr.replace(
+        /unknown/g,
+        preprocessedFileName
+      )}<script src="https://unpkg.com/hocrjs"></script></body></html>`;
+
+      await emailActivity({
+        email: formDTO.email,
+        subject: 'Thank you for your submission',
+        message: `Hi ${formDTO.submitter}, Thank you for your submission`,
+        attachments: [
+          { filename: 'text.txt', content: ocrResult[0].text },
+          { filename: 'hocr.html', content: htmlDoc },
+          {
+            filename: 'metadata_matching.json',
+            content: JSON.stringify(metadataMatchingResult),
+          },
+          { filename: fileName, path: formDTO.fields.document.answer },
+          {
+            filename: preprocessedFileName,
+            path: ocrResult[0].preprocessedFilePath,
+          },
+        ],
+      });
+
+      return 'Email sent';
+    } else {
+      log.error('Email is not valid', { emailValidationResult });
+      return 'Email is not valid';
+    }
   } else {
-    log.error('Email is not valid', { emailValidationResult });
-    return 'Email is not valid';
+    log.error('No OCR result', { ocrResult });
+    return 'No OCR result';
   }
-
-  return 'OK';
 };

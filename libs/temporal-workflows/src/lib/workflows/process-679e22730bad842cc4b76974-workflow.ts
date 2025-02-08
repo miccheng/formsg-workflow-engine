@@ -52,7 +52,7 @@ export const process679e22730bad842cc4b76974workflow = async (
 
   const ocrResult = await documentOcrActivity(
     formDTO.fields.supportingDoc.answer
-  );
+  )[0];
 
   if (emailValidationResult) {
     const fileName = formDTO.fields.supportingDoc.answer.split('/').pop();

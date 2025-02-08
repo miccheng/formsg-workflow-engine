@@ -1,7 +1,8 @@
 import { log } from '@temporalio/activity';
-import Tesseract, { createWorker } from 'tesseract.js';
+import { createWorker } from 'tesseract.js';
 import sharp from 'sharp';
-// import { fromPath } from 'pdf2pic';
+import { fromPath } from 'pdf2pic';
+import { WriteImageResponse } from 'pdf2pic/dist/types/convertResponse';
 
 export type OcrResult = {
   text: string;
@@ -15,13 +16,20 @@ export const documentOcrActivity = async (
 ): Promise<OcrResult[]> => {
   log.debug('Processing image', { imagePath });
 
+  const result: OcrResult[] = [];
+
   if (imagePath.endsWith('.pdf')) {
-    throw new Error('PDF files are not supported');
+    const images = await splitPdf(imagePath);
+    log.debug('Split PDF into images', { images });
+
+    for (const image of images) {
+      result.push(await doOcr(image.path));
+    }
+  } else {
+    result.push(await doOcr(imagePath));
   }
 
-  const result = await doOcr(imagePath);
-
-  return [result];
+  return result;
 };
 
 const doOcr = async (imagePath: string): Promise<OcrResult> => {
@@ -41,20 +49,23 @@ const doOcr = async (imagePath: string): Promise<OcrResult> => {
   };
 };
 
-// const splitPdf = async (pdfPath: string): Promise<string[]> => {
-//   const options = {
-//     density: 100,
-//     saveFilename: "split",
-//     savePath: pdfPath.split('/').slice(0, -1).join('/'),
-//     format: "png",
-//     width: 600,
-//     height: 600
-//   };
-//   const convert = fromPath(pdfPath, options);
-//   const pageToConvertAsImage = 1;
+const splitPdf = async (pdfPath: string): Promise<WriteImageResponse[]> => {
+  const options = {
+    saveFilename: 'split',
+    savePath: pdfPath.split('/').slice(0, -1).join('/'),
+    preserveAspectRatio: true,
+    width: 2000,
+    height: 2000,
+    density: 144,
+  };
+  const conversionResult = await fromPath(pdfPath, options).bulk(-1, {
+    responseType: 'image',
+  });
 
-//   convert(pageToConvertAsImage, { responseType: "image" })
-// }
+  log.info('pdf2image result:', { conversionResult });
+
+  return conversionResult;
+};
 
 const preprocessImage = (imagePath: string): sharp.Sharp => {
   const img = sharp(imagePath);
@@ -69,16 +80,11 @@ const preprocessImage = (imagePath: string): sharp.Sharp => {
 };
 
 const runRecognize = async (
-  image: Buffer,
-  worker?: Tesseract.Worker
+  image: Buffer
 ): Promise<{ text: string; hocr: string }> => {
-  let hasSharedWorker = false;
-  if (!worker) {
-    hasSharedWorker = true;
-    worker = await createWorker('eng', 1, {
-      logger: (m) => log.debug('Logging Tesseract:', m),
-    });
-  }
+  const worker = await createWorker('eng', 1, {
+    logger: (m) => log.debug('Logging Tesseract:', m),
+  });
 
   const {
     data: { text, hocr },
@@ -87,7 +93,7 @@ const runRecognize = async (
   log.debug(text);
   log.debug(hocr);
 
-  if (!hasSharedWorker) await worker.terminate();
+  await worker.terminate();
 
   return { text, hocr };
 };
