@@ -73,6 +73,7 @@ const preprocessImage = (imagePath: string): sharp.Sharp => {
     .resize(2000, 2000, {
       fit: 'inside',
       position: 'center',
+      withoutReduction: true,
     })
     .threshold(100, { greyscale: true });
 

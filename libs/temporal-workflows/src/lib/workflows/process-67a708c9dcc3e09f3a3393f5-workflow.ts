@@ -1,10 +1,12 @@
 import { proxyActivities, log } from '@temporalio/workflow';
+import * as pathHelpers from '../helpers/path-helpers';
 
 import type * as retrieveSubmissionActivities from '../activities/retrieve-submission-activity';
 import type * as validateEmailActivities from '../activities/validate-email-activity';
 import type * as emailActivities from '../activities/email-activity';
 import type * as ocrActivities from '../activities/document-ocr-activity';
 import type * as metadataMatchingActivities from '../activities/metadata-matching-activity';
+import type * as buildZipFileActivities from '../activities/build-zip-file-activity';
 
 import {
   type FormDefinition,
@@ -36,6 +38,12 @@ const { metadataMatchingActivity } = proxyActivities<
 >({
   startToCloseTimeout: '1 minute',
 });
+
+const { buildZipFileActivity } = proxyActivities<typeof buildZipFileActivities>(
+  {
+    startToCloseTimeout: '1 minute',
+  }
+);
 
 const definition: FormDefinition = {
   emailField: 'Email',
@@ -98,30 +106,70 @@ export const process67a708c9dcc3e09f3a3393f5Workflow = async (
     log.info('metadataMatchingResult', metadataMatchingResult);
 
     if (emailValidationResult) {
-      const fileName = formDTO.fields.document.answer.split('/').pop();
-      const preprocessedFileName = ocrResult[0].preprocessedFilePath
-        .split('/')
-        .pop();
-      const htmlDoc = `<html><head><title>HOCR</title></head><body>${ocrResult[0].hocr.replace(
-        /unknown/g,
-        preprocessedFileName
-      )}<script src="https://unpkg.com/hocrjs"></script></body></html>`;
+      const attachments: {
+        filename: string;
+        content?: string;
+        path?: string;
+      }[] = [
+        {
+          filename: pathHelpers.basename(formDTO.fields.document.answer),
+          path: formDTO.fields.document.answer,
+        },
+        {
+          filename: 'metadata_matching.json',
+          content: JSON.stringify(metadataMatchingResult),
+        },
+      ];
+      for (const resultItem of ocrResult) {
+        const { text, hocr, preprocessedFilePath } = resultItem;
+
+        const preprocessedFileName = pathHelpers.basename(preprocessedFilePath);
+        const preprocessedFileNameWithoutExt = pathHelpers.basename(
+          preprocessedFilePath,
+          pathHelpers.extname(preprocessedFilePath)
+        );
+
+        attachments.push({
+          filename: preprocessedFileName,
+          path: preprocessedFilePath,
+        });
+
+        attachments.push({
+          filename: `text-${preprocessedFileNameWithoutExt}.txt`,
+          content: text,
+        });
+
+        const htmlDoc = `<html><head><title>HOCR</title></head><body>${hocr.replace(
+          /unknown/g,
+          pathHelpers.basename(preprocessedFilePath)
+        )}<script src="https://unpkg.com/hocrjs"></script></body></html>`;
+        attachments.push({
+          filename: `hocr-${preprocessedFileNameWithoutExt}.html`,
+          content: htmlDoc,
+        });
+      }
+
+      const workingDirName = pathHelpers.dirname(
+        formDTO.fields.document.answer
+      );
+      const zipFilePath = pathHelpers.join(
+        workingDirName,
+        'submission-result.zip'
+      );
+      const buildZipResult = await buildZipFileActivity(
+        zipFilePath,
+        attachments
+      );
+      log.info('Build Zip File Result', { buildZipResult });
 
       await emailActivity({
         email: formDTO.email,
         subject: 'Thank you for your submission',
         message: `Hi ${formDTO.submitter}, Thank you for your submission`,
         attachments: [
-          { filename: 'text.txt', content: ocrResult[0].text },
-          { filename: 'hocr.html', content: htmlDoc },
           {
-            filename: 'metadata_matching.json',
-            content: JSON.stringify(metadataMatchingResult),
-          },
-          { filename: fileName, path: formDTO.fields.document.answer },
-          {
-            filename: preprocessedFileName,
-            path: ocrResult[0].preprocessedFilePath,
+            filename: 'submission-result.zip',
+            path: zipFilePath,
           },
         ],
       });
