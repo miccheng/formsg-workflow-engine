@@ -38,7 +38,7 @@ const definition: FormDefinition = {
   },
 };
 
-export const process679e22730bad842cc4b76974workflow = async (
+export const processSupportingDocDemoWorkflow = async (
   submissionId: string
 ): Promise<string> => {
   log.info('Processing submission', { submissionId });

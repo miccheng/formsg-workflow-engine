@@ -1,4 +1,4 @@
-import { process675d3e0bf7757f96a3e82d2dWorkflow } from './process-675d3e0bf7757f96a3e82d2d-workflow';
+import { processWorkflowConceptsWorkflow } from './process-workflow-concepts-workflow';
 import { Worker } from '@temporalio/worker';
 import { TestWorkflowEnvironment } from '@temporalio/testing';
 
@@ -72,7 +72,7 @@ const mockActivities: Partial<typeof activities> = {
   notifyRemoteApiActivity: async () => 'Remote API sent',
 };
 
-describe('process675d3e0bf7757f96a3e82d2dWorkflow', () => {
+describe('processWorkflowConceptsWorkflow', () => {
   beforeAll(async () => {
     testEnv = await TestWorkflowEnvironment.createTimeSkipping();
   });
@@ -90,7 +90,7 @@ describe('process675d3e0bf7757f96a3e82d2dWorkflow', () => {
     });
 
     const result = await worker.runUntil(
-      testEnv.client.workflow.execute(process675d3e0bf7757f96a3e82d2dWorkflow, {
+      testEnv.client.workflow.execute(processWorkflowConceptsWorkflow, {
         workflowId: 'test1',
         taskQueue: 'test',
         args: ['submissionId1234'],

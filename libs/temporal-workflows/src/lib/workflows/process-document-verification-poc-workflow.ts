@@ -58,7 +58,7 @@ const definition: FormDefinition = {
   },
 };
 
-export const process67a708c9dcc3e09f3a3393f5Workflow = async (
+export const processDocumentVerificationPocWorkflow = async (
   submissionId: string
 ): Promise<string> => {
   log.info('Processing submission', { submissionId });

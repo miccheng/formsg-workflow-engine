@@ -14,7 +14,7 @@ const { emailActivity } = proxyActivities<typeof emailActivities>({
   startToCloseTimeout: '1 minute',
 });
 
-export const collate675d3e0bf7757f96a3e82d2dWorkflow = async (
+export const collateWorkflowConceptsWorkflow = async (
   formId: string,
   recipientEmail: string,
   targetDate?: string
