@@ -3,14 +3,14 @@ import { log } from '@temporalio/activity';
 import archiver from 'archiver';
 import archiverZipEncrypted from 'archiver-zip-encrypted';
 
+archiver.registerFormat('zip-encrypted', archiverZipEncrypted);
+
 export const buildZipFileActivity = async (
   filePath: string,
   contents: { filename: string; content?: string; path?: string }[],
   password = process.env.ATTACHMENT_PASSWORD
 ): Promise<{ status: string; filePath?: string; password?: string }> => {
   log.info(`Preparing to build Zip file: ${filePath}`);
-
-  archiver.registerFormat('zip-encrypted', archiverZipEncrypted);
 
   const archive = archiver.create('zip-encrypted', {
     zlib: { level: 9 },
