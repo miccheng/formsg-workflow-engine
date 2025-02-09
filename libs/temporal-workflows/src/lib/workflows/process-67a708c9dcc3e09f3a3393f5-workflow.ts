@@ -154,7 +154,7 @@ export const process67a708c9dcc3e09f3a3393f5Workflow = async (
       );
       const zipFilePath = pathHelpers.join(
         workingDirName,
-        'submission-result.zip'
+        `submission-result-${submissionId}.zip`
       );
       const buildZipResult = await buildZipFileActivity(
         zipFilePath,
@@ -165,7 +165,10 @@ export const process67a708c9dcc3e09f3a3393f5Workflow = async (
       await emailActivity({
         email: formDTO.email,
         subject: 'Thank you for your submission',
-        message: `Hi ${formDTO.submitter}, Thank you for your submission`,
+        message: `Hi ${formDTO.submitter}, Thank you for your submission.
+
+${printMetadataMatchingResult(metadataMatchingResult)}
+`,
         attachments: [
           {
             filename: 'submission-result.zip',
@@ -183,4 +186,34 @@ export const process67a708c9dcc3e09f3a3393f5Workflow = async (
     log.error('No OCR result', { ocrResult });
     return 'No OCR result';
   }
+};
+
+const printMetadataMatchingResult = (
+  metadataMatchingResult: metadataMatchingActivities.MetaMatchResult
+) => {
+  log.info('Metadata matching result', metadataMatchingResult);
+
+  const textArray = [];
+
+  textArray.push('Metadata matching result:');
+  for (const [key, value] of Object.entries(metadataMatchingResult)) {
+    textArray.push(`- ${key}:`);
+    for (const item of value) {
+      if (item.matches.length === 0) {
+        textArray.push(`  - ${item.searchStr}: no matches`);
+      } else {
+        if (item.matches[0].score === 0) {
+          textArray.push(`  - ${item.searchStr}: exact match`);
+        } else if (item.matches[0].score > 0.5) {
+          textArray.push(`  - ${item.searchStr}: no match`);
+        } else {
+          const firstScore = Math.round(item.matches[0].score * 100) / 100;
+          const scorePercentage = (1 - firstScore) * 100;
+          textArray.push(`  - ${item.searchStr}: ${scorePercentage}% match`);
+        }
+      }
+    }
+  }
+
+  return textArray.join('\n');
 };
