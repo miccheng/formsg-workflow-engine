@@ -171,7 +171,7 @@ ${printMetadataMatchingResult(metadataMatchingResult)}
 `,
         attachments: [
           {
-            filename: 'submission-result.zip',
+            filename: pathHelpers.basename(zipFilePath),
             path: zipFilePath,
           },
         ],
